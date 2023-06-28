@@ -18,7 +18,12 @@ const BodyContainer = tw.div`flex flex-col gap-1 bg-gray`;
 
 //#endregion
 
-const ExampleCompositionComponent = ({ name, children, header, footer }: IExampleCompositionComponentProps) => {
+const ExampleCompositionComponent = ({
+  name,
+  children,
+  header,
+  footer,
+}: IExampleCompositionComponentProps) => {
   return (
     <Container>
       <Description>{name}</Description>

@@ -1,9 +1,9 @@
-import ExampleComponent from '@/components/ExampleComponent';
-import ExampleCompositionComponent from '@/components/ExampleCompositionComponent';
-import { ExampleContext } from '@/context/ExampleContext';
 import Head from 'next/head';
 import { Fragment, useContext } from 'react';
 import tw from 'tailwind-styled-components';
+import ExampleComponent from '@/components/ExampleComponent';
+import ExampleCompositionComponent from '@/components/ExampleCompositionComponent';
+import { ExampleContext } from '@/context/ExampleContext';
 
 //#region Styled Components
 
@@ -17,6 +17,7 @@ const ChangeButton = tw.button`bg-green text-white px-4 py-2`;
 
 export default function Home() {
   const { data, handleData } = useContext(ExampleContext);
+
   return (
     <Fragment>
       <Head>
@@ -27,9 +28,15 @@ export default function Home() {
       </Head>
       <ContextExampleContainer>
         <ContextData>{data}</ContextData>
-        <ChangeButton onClick={() => handleData('Context Has Changed!')}>Change</ChangeButton>
+        <ChangeButton onClick={() => handleData('Context Has Changed!')}>
+          Change
+        </ChangeButton>
       </ContextExampleContainer>
-      <ExampleCompositionComponent name="This is Composition Exammple Component" header={<ExampleComponent name="Header" />} footer={<ExampleComponent name="Footer" />}>
+      <ExampleCompositionComponent
+        name="This is Composition Exammple Component"
+        header={<ExampleComponent name="Header" />}
+        footer={<ExampleComponent name="Footer" />}
+      >
         <ExampleComponent name="Children" />
       </ExampleCompositionComponent>
     </Fragment>

@@ -7,7 +7,10 @@ interface IExampleComponentProps {
 
 //#region Styled Components
 
-const Container = tw.div < { $isSelected: boolean } > `p-2 box-border cursor-pointer border-solid border-black ${props => props.$isSelected && `border-[4px]`}`;
+const Container = tw.div<{
+  $isSelected: boolean;
+}>`p-2 box-border cursor-pointer border-solid border-black ${(props) =>
+  props.$isSelected && 'border-[4px]'}`;
 
 //#endregion
 
@@ -15,7 +18,7 @@ const ExampleComponent = ({ name }: IExampleComponentProps) => {
   const [isSelected, setIsSelected] = useState(false);
 
   const handleClick = () => {
-    setIsSelected(current => !current);
+    setIsSelected((current) => !current);
   };
 
   return (

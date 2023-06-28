@@ -2,6 +2,7 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     colors: {
+      primary: '#056BF1',
       red: '#ff4949',
       blue: '#1fb6ff',
       purple: '#7e5bef',
@@ -13,6 +14,10 @@ module.exports = {
       gray: '#8492a6',
       'gray-light': '#d3dce6',
       white: '#ffffff',
+      navy: '#12133C',
+      'navy-light': '#292B4F',
+      'background-light': '#F9FAFF',
+      'background-hover': '#F8F8FE',
     },
     fontFamily: {
       sans: ['Graphik', 'sans-serif'],

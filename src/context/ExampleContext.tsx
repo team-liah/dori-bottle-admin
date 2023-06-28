@@ -10,12 +10,18 @@ interface ExampleContextProps {
   initialData: string;
 }
 
-export const ExampleContext = createContext<ExampleContextType>({} as ExampleContextType);
+export const ExampleContext = createContext<ExampleContextType>(
+  {} as ExampleContextType,
+);
 
 export const ExampleProvider = (props: ExampleContextProps) => {
   const [data, setData] = useState<string>(props.initialData);
 
   const handleData = useCallback((_data: string) => setData(_data), []);
 
-  return <ExampleContext.Provider value={{ data, handleData }}>{props.children}</ExampleContext.Provider>;
+  return (
+    <ExampleContext.Provider value={{ data, handleData }}>
+      {props.children}
+    </ExampleContext.Provider>
+  );
 };

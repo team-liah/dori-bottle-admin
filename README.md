@@ -1,4 +1,4 @@
-# [NextJS Boilerplate]
+# Dori Bottle ADMIN
 
 ![Next JS](https://img.shields.io/badge/Next-black?style=plastic&logo=next.js&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=plastic&logo=react&logoColor=%2361DAFB)
