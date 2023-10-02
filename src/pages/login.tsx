@@ -1,100 +1,56 @@
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import tw from 'tailwind-styled-components';
-import background from '../../public/images/background.png';
-import { login } from '@/api/auth';
+import GradientBg from "@/components/page/login/gradient-bg";
+import LoginForm from "@/components/page/login/login-form";
+import { Alert } from "antd";
+import { Verified } from "lucide-react";
 
-//#region Styled Component
-
-const Container = tw.div`
-  relative flex flex-col items-center justify-center h-screen bg-[#1A1A1A] gap-4`;
-
-const Background = tw(Image)`
-  absolute w-full h-full`;
-
-const Dimmed = tw.div`
-  absolute w-full h-full bg-[#000000] opacity-70`;
-
-const LogoContainer = tw.div`
-  flex flex-col relative items-center justify-center mb-7 gap-2`;
-
-const LoginContainer = tw.div`
-  flex flex-col relative items-center justify-center gap-2`;
-
-const Title = tw.div`
-  text-[40px] leading-[1.2] font-extrabold text-[#F0F0F0]`;
-
-const Subtitle = tw.div`
-  text-[20px] leading-[0] font-[300] text-[#F0F0F0]`;
-
-const InputContainer = tw.div`
-  flex flex-col relative items-center justify-center gap-2`;
-
-const Input = tw.input<{ $error?: boolean }>`
-  w-[300px] h-[50px] rounded-[4px] text-[#F0F0F0] bg-[transparent] border boder-solid border-white px-4 py-3 focus:bg-white focus:text-[#1A1A1A] ${(
-    props,
-  ) => props.$error && 'border-red'}}`;
-
-const ErrorText = tw.div`
-  text-sm text-red w-full absolute bottom-[-30px]`;
-
-const Button = tw.button`
-  w-[300px] h-[50px] relative rounded-[4px] text-[#F0F0F0] bg-primary font-extrabold mt-8 disabled:opacity-70`;
-
-//#endregion
-
-const Login = () => {
-  const router = useRouter();
-  const [useName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      await login(useName, password);
-      router.push('/dashboard');
-    } catch (error) {
-      setLoading(false);
-      setError(true);
-    }
-  };
-
+const LoginPage = () => {
   return (
-    <Container>
-      <Background src={background} alt="background" />
-      <Dimmed />
-      <LogoContainer>
-        <Image alt="logo" src={'/images/logo.png'} width={50} height={50} />
-        <Title>Dori Bottle</Title>
-        <Subtitle>ADMIN</Subtitle>
-      </LogoContainer>
-      <form onSubmit={handleLogin}>
-        <LoginContainer>
-          <Input
-            $error={error}
-            placeholder="Username"
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          <InputContainer>
-            <Input
-              $error={error}
-              type="password"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {error && (
-              <ErrorText>아이디 또는 비밀번호가 일치하지 않습니다.</ErrorText>
-            )}
-          </InputContainer>
-          <Button disabled={loading}>{loading ? 'Loading...' : 'Login'}</Button>
-        </LoginContainer>
-      </form>
-    </Container>
+    <div className="flex min-h-screen bg-white items-centerw-full">
+      <div className={`relative hidden w-1/2 lg:block`}>
+        <GradientBg className="absolute top-0 left-0 w-full h-full" />
+        <img src="/logo.png" className="absolute w-10 h-10 top-5 left-5" alt="logo" />
+        <div className="absolute inline-flex items-center gap-1 px-3 py-2 font-semibold text-white border-2 border-white rounded-lg left-5 bottom-5">
+          <Verified width={18} height={18} />
+          DORI BOTTLE ADMIN
+        </div>
+      </div>
+
+      <div className="w-full lg:w-1/2">
+        <div className="relative flex items-center justify-center h-full">
+          <section className="w-full px-5 pb-10 text-gray-800 sm:w-4/6 md:w-3/6 lg:w-4/6 xl:w-3/6 sm:px-0">
+            {!process.env.NEXT_PUBLIC_API_ENDPOINT ? (
+              <Alert
+                message="환경변수 설정 오류"
+                description={
+                  <span>
+                    .env.example 파일을 복사하여 .env 파일을 생성해주세요.{" "}
+                    <a
+                      href="https://github.com/purpleio/purple-admin-ui#%EA%B8%B0%EB%B3%B8-%EC%84%A4%EC%A0%95"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      참고 링크
+                    </a>
+                  </span>
+                }
+                type="error"
+                showIcon
+                className="my-10"
+              />
+            ) : null}
+            <div className="flex flex-col items-center justify-center px-2 mt-8 sm:mt-0">
+              <h2 className="mt-2 text-5xl font-bold leading-tight inter">DORI BOTTLE</h2>
+              <div className="mt-1 text-lg text-gray-400">Admin System</div>
+            </div>
+
+            <div className="w-full px-2 mt-12 sm:px-6">
+              <LoginForm />
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default Login;
+export default LoginPage;
