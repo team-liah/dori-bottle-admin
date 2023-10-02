@@ -9,6 +9,7 @@ env:
   AWS_REGION: ap-northeast-2
   ECR_REGISTRY: 775806464952.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: dori-bottle-admin
+  IMAGE_TAG: ${{ github.run_number }}
 
 jobs:
   build:
@@ -34,5 +35,5 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
-          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }} --all-tags
