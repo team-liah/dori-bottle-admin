@@ -6,7 +6,6 @@ import "@/styles/globals.css";
 import { ConfigProvider } from "antd";
 import koKR from "antd/locale/ko_KR";
 import { NextComponentType } from "next";
-import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import Head from "next/head";
@@ -46,11 +45,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         locale={koKR}
       >
         <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
-          <SessionProvider session={session}>
-            <AuthProvider>
-              <main className={`${pretendard.variable} font-sans`}>{getLayout(Component, pageProps)}</main>
-            </AuthProvider>
-          </SessionProvider>
+          <AuthProvider>
+            <main className={`${pretendard.variable} font-sans`}>{getLayout(Component, pageProps)}</main>
+          </AuthProvider>
         </SWRConfig>
       </ConfigProvider>
     </>
