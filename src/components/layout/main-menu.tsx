@@ -1,5 +1,5 @@
 import { Divider } from "antd";
-import { Home, Monitor, Package2 } from "lucide-react";
+import { Home, Megaphone, Monitor } from "lucide-react";
 import React from "react";
 import Menu, { IMenu } from "./nav";
 
@@ -13,15 +13,22 @@ const mainMenuData: IMenu[] = [
     },
   },
   {
-    id: "product",
-    name: "상품 관리",
-    icon: <Package2 className="w-5 h-5" />,
+    id: "notice",
+    name: "게시글 관리",
+    icon: <Megaphone className="w-5 h-5" />,
     submenu: [
       {
-        id: "productList",
-        name: "상품 목록",
+        id: "noticeList",
+        name: "공지사항 목록",
         link: {
-          path: "/sample/product/list",
+          path: "/notice/list",
+        },
+      },
+      {
+        id: "qnaList",
+        name: "QnA 목록",
+        link: {
+          path: "/qna/list",
         },
       },
     ],
