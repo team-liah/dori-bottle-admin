@@ -1,6 +1,6 @@
 import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/layout/default-layout";
-import NoticeList from "@/components/page/notice/notice-list";
-import NoticeSearch from "@/components/page/notice/notice-search";
+import NoticeList from "@/components/page/post/notice/notice-list";
+import NoticeSearch from "@/components/page/post/notice/notice-search";
 
 const pageHeader: IPageHeader = {
   title: "공지사항 목록",

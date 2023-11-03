@@ -1,4 +1,4 @@
-import { INotice, deleteNotices, useNotices } from "@/client/notice";
+import { IPost, deletePosts, usePosts } from "@/client/notice";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import { ISO8601DateTime } from "@/types/common";
@@ -13,7 +13,7 @@ const NoticeList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
-  const { data, error, isLoading, mutate } = useNotices({
+  const { data, error, isLoading, mutate } = usePosts({
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     keyword: router.query.keyword as string,
     size: 5,
@@ -36,7 +36,7 @@ const NoticeList = () => {
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
-        await deleteNotices(ids);
+        await deletePosts(ids);
         message.success("공지사항이 삭제되었습니다.");
         setSelectedRowKeys([]);
         mutate();
@@ -53,15 +53,15 @@ const NoticeList = () => {
   };
   const hasSelected = selectedRowKeys.length > 0;
 
-  const columns: ColumnsType<INotice> = [
+  const columns: ColumnsType<IPost> = [
     {
       key: "action",
       width: 120,
       align: "center",
-      render: (_value: unknown, record: INotice) => {
+      render: (_value: unknown, record: IPost) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/notice/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            <Link href={`/post/notice/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               수정
             </Link>
             <Popconfirm
@@ -84,7 +84,7 @@ const NoticeList = () => {
       title: "작성자",
       dataIndex: "author",
       width: 200,
-      render: (_value: unknown, record: INotice) => {
+      render: (_value: unknown, record: IPost) => {
         return (
           <div className="flex flex-row items-center gap-2">
             <span className="text-sm">
@@ -148,13 +148,13 @@ const NoticeList = () => {
         </div>
 
         <div className="flex-item-list">
-          <Button type="primary" onClick={() => router.push("/notice/new")}>
+          <Button type="primary" onClick={() => router.push("/post/notice/new")}>
             공지사항 등록
           </Button>
         </div>
       </DefaultTableBtn>
 
-      <DefaultTable<INotice>
+      <DefaultTable<IPost>
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data?.content || []}

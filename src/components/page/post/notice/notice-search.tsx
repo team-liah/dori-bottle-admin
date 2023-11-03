@@ -1,4 +1,4 @@
-import { IProductFormValue } from "@/client/sample/product";
+import { IPostsParams } from "@/client/notice";
 import DefaultSearchForm from "@/components/shared/form/ui/default-search-form";
 import FieldInline from "@/components/shared/form/ui/field-inline";
 import FormSearch from "@/components/shared/form/ui/form-search";
@@ -8,12 +8,12 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 
-const ProductSearch = () => {
+const NoticeSearch = () => {
   const [form] = useForm();
   const router = useRouter();
 
   const handleFinish = useCallback(
-    (formValue: IProductFormValue) => {
+    (formValue: IPostsParams) => {
       router.push({
         pathname: router.pathname,
         query: { ...router.query, ...formValue },
@@ -50,4 +50,4 @@ const ProductSearch = () => {
   );
 };
 
-export default React.memo(ProductSearch);
+export default React.memo(NoticeSearch);

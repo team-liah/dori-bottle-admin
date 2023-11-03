@@ -21,14 +21,14 @@ const mainMenuData: IMenu[] = [
         id: "noticeList",
         name: "공지사항 목록",
         link: {
-          path: "/notice/list",
+          path: "/post/notice/list",
         },
       },
       {
         id: "qnaList",
         name: "QnA 목록",
         link: {
-          path: "/qna/list",
+          path: "/notice/qna/list",
         },
       },
     ],

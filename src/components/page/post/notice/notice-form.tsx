@@ -1,4 +1,4 @@
-import { INoticeFormValue, createNotice, updateNotice } from "@/client/notice";
+import { IPostFormValue, createPost, updatePost } from "@/client/notice";
 import QuillEditor from "@/components/shared/form/control/quill-editor";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
@@ -12,7 +12,7 @@ import React, { useState } from "react";
 
 interface INoticeFormProps {
   id?: string;
-  initialValues?: Partial<INoticeFormValue>;
+  initialValues?: Partial<IPostFormValue>;
 }
 
 const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
@@ -22,18 +22,18 @@ const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
-  const handleFinish = async (formValue: INoticeFormValue) => {
+  const handleFinish = async (formValue: IPostFormValue) => {
     try {
       setIsLoading(true);
 
       if (id) {
-        await updateNotice(id, { ...formValue, type: "NOTICE" });
+        await updatePost(id, { ...formValue, type: "NOTICE" });
         messageApi.success("수정되었습니다");
       } else {
-        await createNotice({ ...formValue, type: "NOTICE" });
+        await createPost({ ...formValue, type: "NOTICE" });
         messageApi.success("생성되었습니다");
       }
-      setTimeout(() => router.push("/notice/list"), 500);
+      setTimeout(() => router.push("/post/notice/list"), 500);
     } catch (e: unknown) {
       messageApi.error(getErrorMessage(e));
     } finally {
@@ -47,7 +47,7 @@ const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
   return (
     <>
       {contextHolder}
-      <DefaultForm<INoticeFormValue> form={form} initialValues={initialValues} onFinish={handleFinish}>
+      <DefaultForm<IPostFormValue> form={form} initialValues={initialValues} onFinish={handleFinish}>
         <FormSection title="기본정보" description="공지사항 기본 정보를 입력해주세요">
           <FormGroup title="제목*">
             <Form.Item name="title" rules={[{ required: true, message: "필수값입니다" }]}>
