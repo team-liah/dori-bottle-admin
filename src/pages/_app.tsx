@@ -6,7 +6,6 @@ import "@/styles/globals.css";
 import { ConfigProvider } from "antd";
 import koKR from "antd/locale/ko_KR";
 import { NextComponentType } from "next";
-import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import Head from "next/head";
@@ -31,26 +30,21 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        {process.env.NEXT_PUBLIC_CODENBUTTER_SITE_ID ? (
-          <script src="https://buttr.dev/butter.js" data-site-id={process.env.NEXT_PUBLIC_CODENBUTTER_SITE_ID} async />
-        ) : null}
       </Head>
       <ConfigProvider
         theme={{
           token: {
-            colorPrimary: "#63489a",
-            colorLink: "#63489a",
-            colorLinkHover: "#7f68a6",
+            colorPrimary: "#056BF1",
+            colorLink: "#056BF1",
+            colorLinkHover: "#5aa1ff",
           },
         }}
         locale={koKR}
       >
         <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
-          <SessionProvider session={session}>
-            <AuthProvider>
-              <main className={`${pretendard.variable} font-sans`}>{getLayout(Component, pageProps)}</main>
-            </AuthProvider>
-          </SessionProvider>
+          <AuthProvider>
+            <main className={`${pretendard.variable} font-sans`}>{getLayout(Component, pageProps)}</main>
+          </AuthProvider>
         </SWRConfig>
       </ConfigProvider>
     </>
