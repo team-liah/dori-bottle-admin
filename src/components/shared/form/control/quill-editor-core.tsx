@@ -73,6 +73,7 @@ const QuillEditorCore = ({ value, onChange, placeholder }: IQuillEditorCoreProps
   return (
     <>
       <ReactQuill
+        ref={quillRef}
         theme="snow"
         value={value || ""}
         modules={modules}

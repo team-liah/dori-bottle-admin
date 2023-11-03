@@ -31,12 +31,6 @@ export const fetchApi = ky.create({
   },
 });
 
-export const fetchFormDataApi = ky.create({
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-});
-
 const memorizedRefresh = mem(
   async () => {
     try {

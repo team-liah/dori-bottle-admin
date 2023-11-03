@@ -1,8 +1,13 @@
-import { fetchFormDataApi } from "./base";
+import ky from "ky-universal";
 
-export const uploadFile = (file: File) => {
+export interface IUploadFileResponse {
+  key: React.Key;
+  url: string;
+}
+
+export const uploadFile: (file: File) => Promise<IUploadFileResponse> = (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  return fetchFormDataApi.post(`/api/asset/upload`, { body: formData });
+  return ky.post(`/api/asset/upload`, { body: formData }).json();
 };
