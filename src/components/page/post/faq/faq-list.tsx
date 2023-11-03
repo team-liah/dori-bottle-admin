@@ -9,12 +9,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
-const NoticeList = () => {
+const FaqList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
   const { data, error, isLoading, mutate } = usePosts({
-    type: "NOTICE",
+    type: "FAQ",
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     keyword: router.query.keyword as string,
     size: 5,
@@ -38,11 +38,11 @@ const NoticeList = () => {
     async (ids: React.Key[]) => {
       try {
         await deletePosts(ids);
-        message.success("공지사항이 삭제되었습니다.");
+        message.success("FAQ가 삭제되었습니다.");
         setSelectedRowKeys([]);
         mutate();
       } catch (error) {
-        message.error("공지사항 삭제에 실패했습니다.");
+        message.error("FAQ 삭제에 실패했습니다.");
       }
     },
     [mutate]
@@ -62,11 +62,11 @@ const NoticeList = () => {
       render: (_value: unknown, record: IPost) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/post/notice/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            <Link href={`/post/faq/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               수정
             </Link>
             <Popconfirm
-              title="공지사항을 삭제하시겠습니까?"
+              title="FAQ를 삭제하시겠습니까?"
               onConfirm={() => handleDelete([record.id])}
               okText="예"
               cancelText="아니오"
@@ -134,7 +134,7 @@ const NoticeList = () => {
       <DefaultTableBtn className="justify-between">
         <div>
           <Popconfirm
-            title="공지사항을 삭제하시겠습니까?"
+            title="FAQ를 삭제하시겠습니까?"
             disabled={!hasSelected}
             onConfirm={() => handleDelete(selectedRowKeys)}
             okText="예"
@@ -149,8 +149,8 @@ const NoticeList = () => {
         </div>
 
         <div className="flex-item-list">
-          <Button type="primary" onClick={() => router.push("/post/notice/new")}>
-            공지사항 등록
+          <Button type="primary" onClick={() => router.push("/post/faq/new")}>
+            FAQ 등록
           </Button>
         </div>
       </DefaultTableBtn>
@@ -174,4 +174,4 @@ const NoticeList = () => {
   );
 };
 
-export default React.memo(NoticeList);
+export default React.memo(FaqList);

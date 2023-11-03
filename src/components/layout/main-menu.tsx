@@ -13,7 +13,7 @@ const mainMenuData: IMenu[] = [
     },
   },
   {
-    id: "notice",
+    id: "post",
     name: "게시글 관리",
     icon: <Megaphone className="w-5 h-5" />,
     submenu: [
@@ -25,10 +25,10 @@ const mainMenuData: IMenu[] = [
         },
       },
       {
-        id: "qnaList",
-        name: "QnA 목록",
+        id: "fnaList",
+        name: "FAQ 목록",
         link: {
-          path: "/notice/qna/list",
+          path: "/post/faq/list",
         },
       },
     ],

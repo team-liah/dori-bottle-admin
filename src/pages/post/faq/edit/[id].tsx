@@ -1,14 +1,14 @@
 import { usePost } from "@/client/post";
 import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/layout/default-layout";
-import NoticeForm from "@/components/page/post/notice/notice-form";
+import FaqForm from "@/components/page/post/faq/faq-form";
 import { Alert, Skeleton } from "antd";
 import { useRouter } from "next/router";
 
 const pageHeader: IPageHeader = {
-  title: "공지사항 수정",
+  title: "FAQ 수정",
 };
 
-const NoticeEditPage: IDefaultLayoutPage = () => {
+const FaqEditPage: IDefaultLayoutPage = () => {
   const router = useRouter();
   const { data, error, isLoading, isValidating } = usePost(router.query.id as string);
 
@@ -20,10 +20,10 @@ const NoticeEditPage: IDefaultLayoutPage = () => {
     return <Skeleton className="my-5" />;
   }
 
-  return <NoticeForm id={router.query.id as string} initialValues={data} />;
+  return <FaqForm id={router.query.id as string} initialValues={data} />;
 };
 
-NoticeEditPage.getLayout = getDefaultLayout;
-NoticeEditPage.pageHeader = pageHeader;
+FaqEditPage.getLayout = getDefaultLayout;
+FaqEditPage.pageHeader = pageHeader;
 
-export default NoticeEditPage;
+export default FaqEditPage;

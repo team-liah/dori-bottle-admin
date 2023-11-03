@@ -10,12 +10,12 @@ import { useForm } from "antd/lib/form/Form";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-interface INoticeFormProps {
+interface IFaqFormProps {
   id?: string;
   initialValues?: Partial<IPostFormValue>;
 }
 
-const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
+const FaqForm = ({ id, initialValues }: IFaqFormProps) => {
   const router = useRouter();
   const [form] = useForm();
   const { profile, mutateProfile } = useAuth();
@@ -27,13 +27,13 @@ const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
       setIsLoading(true);
 
       if (id) {
-        await updatePost(id, { ...formValue, type: "NOTICE" });
+        await updatePost(id, { ...formValue, type: "FAQ" });
         messageApi.success("수정되었습니다");
       } else {
-        await createPost({ ...formValue, type: "NOTICE" });
+        await createPost({ ...formValue, type: "FAQ" });
         messageApi.success("생성되었습니다");
       }
-      setTimeout(() => router.push("/post/notice/list"), 500);
+      setTimeout(() => router.push("/post/faq/list"), 500);
     } catch (e: unknown) {
       messageApi.error(getErrorMessage(e));
     } finally {
@@ -48,7 +48,7 @@ const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
     <>
       {contextHolder}
       <DefaultForm<IPostFormValue> form={form} initialValues={initialValues} onFinish={handleFinish}>
-        <FormSection title="기본정보" description="공지사항 기본 정보를 입력해주세요">
+        <FormSection title="기본정보" description="FAQ 기본 정보를 입력해주세요">
           <FormGroup title="제목*">
             <Form.Item name="title" rules={[{ required: true, message: "필수값입니다" }]}>
               <Input placeholder="제목을 입력하세요" disabled={!!id} />
@@ -74,4 +74,4 @@ const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
   );
 };
 
-export default React.memo(NoticeForm);
+export default React.memo(FaqForm);

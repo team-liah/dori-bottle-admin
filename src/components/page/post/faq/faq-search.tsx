@@ -8,7 +8,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 
-const NoticeSearch = () => {
+const FaqSearch = () => {
   const [form] = useForm();
   const router = useRouter();
 
@@ -50,4 +50,4 @@ const NoticeSearch = () => {
   );
 };
 
-export default React.memo(NoticeSearch);
+export default React.memo(FaqSearch);
