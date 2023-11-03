@@ -45,7 +45,7 @@ export const createPost = (value: IPostFormValue) => {
 };
 
 export const updatePost = (id: React.Key, value: IPostFormValue) => {
-  return fetchApi.patch(`/api/post/${id}`, { body: JSON.stringify(value) });
+  return fetchApi.put(`/api/post/${id}`, { body: JSON.stringify(value) });
 };
 
 export const deletePosts = async (ids: React.Key[]) => {

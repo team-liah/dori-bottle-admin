@@ -51,7 +51,7 @@ const NoticeForm = ({ id, initialValues }: INoticeFormProps) => {
         <FormSection title="기본정보" description="공지사항 기본 정보를 입력해주세요">
           <FormGroup title="제목*">
             <Form.Item name="title" rules={[{ required: true, message: "필수값입니다" }]}>
-              <Input placeholder="제목을 입력하세요" disabled={!!id} />
+              <Input placeholder="제목을 입력하세요" />
             </Form.Item>
           </FormGroup>
 
