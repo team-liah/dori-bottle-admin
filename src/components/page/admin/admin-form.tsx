@@ -10,6 +10,7 @@ import { Button, Divider, Form, Input, Select, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import AdminPasswordFormModal from "./admin-password-form-modal";
 
 interface IAdminFormProps {
   id?: string;
@@ -23,6 +24,7 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
   const [form] = useForm();
   const { profile, mutateProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleFinish = async (formValue: IAdminFormValue) => {
@@ -79,7 +81,7 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
 
           <Divider />
 
-          {!!id ? (
+          {!id ? (
             <>
               <FormGroup title="비밀번호*">
                 <Form.Item name="loginPassword" rules={[{ required: true, message: "필수값입니다" }]}>
@@ -94,7 +96,7 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
             </>
           ) : (
             <FormGroup title="비밀번호*">
-              <Button type="default" onClick={() => {}}>
+              <Button type="default" onClick={() => setOpenChangePasswordModal(true)}>
                 비밀번호 변경
               </Button>
             </FormGroup>
@@ -122,6 +124,8 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
             </Form.Item>
           </FormGroup>
 
+          <Divider />
+
           <FormGroup title="전화번호">
             <Form.Item
               name="phoneNumber"
@@ -140,6 +144,8 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
             </Form.Item>
           </FormGroup>
 
+          <Divider />
+
           <FormGroup title="메모">
             <Form.Item name="description">
               <Input.TextArea placeholder="메모를 입력하세요" rows={10} />
@@ -153,6 +159,11 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
           </Button>
         </div>
       </DefaultForm>
+      <AdminPasswordFormModal
+        id={id!}
+        open={openChangePasswordModal}
+        handleHide={() => setOpenChangePasswordModal(false)}
+      />
     </>
   );
 };

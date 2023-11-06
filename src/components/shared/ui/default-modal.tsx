@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import React, { PropsWithChildren } from "react";
 import style from "./default-modal.module.css";
 
-interface IDefaultModalProps extends ModalProps {
+export interface IDefaultModalProps extends ModalProps {
   handleHide: () => void;
 }
 
