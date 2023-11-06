@@ -31,7 +31,7 @@ const AdminPasswordFormModal = ({ id, handleHide, ...modalProps }: IAdminPasswor
       messageApi.success("수정되었습니다");
       setTimeout(() => handleHide(), 500);
     } catch (e: unknown) {
-      messageApi.error(getErrorMessage(e));
+      messageApi.error(await getErrorMessage(e));
     } finally {
       if (profile?.id === id) {
         mutateProfile?.();

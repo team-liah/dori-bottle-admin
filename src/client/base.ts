@@ -29,6 +29,24 @@ export const fetchApi = ky.create({
   headers: {
     "Content-Type": "application/json",
   },
+  hooks: {
+    afterResponse: [
+      async (request, options, response) => {
+        if (response.status === 401) {
+          try {
+            await memorizedRefresh();
+            return ky(request);
+          } catch (error) {
+            if (process.browser && window.location.pathname !== "/login") {
+              Router.push("/login");
+            }
+            throw error;
+          }
+        }
+        return response;
+      },
+    ],
+  },
 });
 
 const memorizedRefresh = mem(

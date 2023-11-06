@@ -43,7 +43,7 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
       }
       setTimeout(() => router.push("/admin/list"), 500);
     } catch (e: unknown) {
-      messageApi.error(getErrorMessage(e));
+      messageApi.error(await getErrorMessage(e));
     } finally {
       if (profile?.id === id) {
         mutateProfile?.();
