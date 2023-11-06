@@ -8,7 +8,7 @@ const pageHeader: IPageHeader = {
   title: "관리자 수정",
 };
 
-const ProductEditPage: IDefaultLayoutPage = () => {
+const AdminEditPage: IDefaultLayoutPage = () => {
   const router = useRouter();
   const { data, error, isLoading, isValidating } = useAdmin(router.query.id as string);
 
@@ -23,7 +23,7 @@ const ProductEditPage: IDefaultLayoutPage = () => {
   return <AdminForm id={router.query.id as string} initialValues={data} />;
 };
 
-ProductEditPage.getLayout = getDefaultLayout;
-ProductEditPage.pageHeader = pageHeader;
+AdminEditPage.getLayout = getDefaultLayout;
+AdminEditPage.pageHeader = pageHeader;
 
-export default ProductEditPage;
+export default AdminEditPage;

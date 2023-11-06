@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { fetchApi } from "./base";
 
 export type AdminRole = "ADMIN" | "MACHINE_ADMIN" | "INSTITUTION";
+export const ADMIN_ROLES: AdminRole[] = ["ADMIN", "MACHINE_ADMIN", "INSTITUTION"];
 export interface IAdmin {
   id: React.Key;
   loginId: string;
@@ -13,6 +14,7 @@ export interface IAdmin {
   phoneNumber?: string;
   description?: string;
   role: AdminRole;
+  deleted: boolean;
   createdDate?: string;
   lastModifiedDate?: string;
 }
@@ -22,7 +24,10 @@ export interface IAdminFormValue extends Omit<IAdmin, "id" | "createdDate" | "la
 export interface IAdminPasswordFormValue extends Pick<IAdmin, "loginPassword" | "confirmPassword"> {}
 
 export interface IAdminsParams {
-  keyword?: string;
+  loginId?: string;
+  name?: string;
+  role?: AdminRole;
+  deleted?: boolean;
   page?: number;
   size?: number;
   sort?: string[];

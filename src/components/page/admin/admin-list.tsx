@@ -1,4 +1,4 @@
-import { IAdmin, deleteAdmins, useAdmins } from "@/client/admin";
+import { AdminRole, IAdmin, deleteAdmins, getAdminRoleLabel, useAdmins } from "@/client/admin";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import { ISO8601DateTime } from "@/types/common";
@@ -15,7 +15,10 @@ const AdminList = () => {
 
   const { data, error, isLoading, mutate } = useAdmins({
     page: router.query.page ? Number(router.query.page) - 1 : 0,
-    keyword: router.query.keyword as string,
+    name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
+    loginId: router.query.searchType === "loginId" ? String(router.query.keyword) : undefined,
+    role: router.query.role && router.query.role !== "ALL" ? (router.query.role as AdminRole) : undefined,
+    deleted: router.query.deleted ? (router.query.deleted === "true" ? true : false) : undefined,
     size: 5,
   });
 
@@ -79,6 +82,14 @@ const AdminList = () => {
     {
       title: "아이디",
       dataIndex: "loginId",
+      render: (_value: string, record: IAdmin) => {
+        return (
+          <span>
+            {_value || "-"}
+            {record.deleted && ` (삭제됨)`}
+          </span>
+        );
+      },
     },
     {
       title: "이름",
@@ -88,10 +99,10 @@ const AdminList = () => {
       },
     },
     {
-      title: "이메일",
-      dataIndex: "email",
-      render: (value: string) => {
-        return <span>{value || "-"}</span>;
+      title: "권한",
+      dataIndex: "role",
+      render: (value: AdminRole) => {
+        return <span>{getAdminRoleLabel(value) || "-"}</span>;
       },
     },
     {

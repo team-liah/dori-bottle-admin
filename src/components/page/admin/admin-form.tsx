@@ -1,4 +1,4 @@
-import { AdminRole, IAdminFormValue, createAdmin, getAdminRoleLabel, updateAdmin } from "@/client/admin";
+import { ADMIN_ROLES, IAdminFormValue, createAdmin, getAdminRoleLabel, updateAdmin } from "@/client/admin";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
@@ -16,8 +16,6 @@ interface IAdminFormProps {
   id?: string;
   initialValues?: Partial<IAdminFormValue>;
 }
-
-const ADMIN_ROLES: AdminRole[] = ["ADMIN", "MACHINE_ADMIN", "INSTITUTION"];
 
 const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
   const router = useRouter();
