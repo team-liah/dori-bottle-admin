@@ -4,7 +4,7 @@ import { IAdmin } from './admin';
 import { fetchApi } from './base';
 
 export const useProfile = () => {
-  return useSWR<IAdmin>('/api/account/profile', {
+  return useSWR<IAdmin>('/api/me', {
     revalidateOnFocus: false,
     errorRetryCount: 0,
   });

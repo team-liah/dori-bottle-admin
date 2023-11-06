@@ -35,7 +35,7 @@ const FaqForm = ({ id, initialValues }: IFaqFormProps) => {
       }
       setTimeout(() => router.push("/post/faq/list"), 500);
     } catch (e: unknown) {
-      messageApi.error(getErrorMessage(e));
+      messageApi.error(await getErrorMessage(e));
     } finally {
       if (profile?.id === id) {
         mutateProfile?.();
