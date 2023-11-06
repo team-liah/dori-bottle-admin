@@ -1,20 +1,25 @@
-import qs from 'qs';
-import useSWR from 'swr';
-import { fetchApi } from './base';
+import qs from "qs";
+import useSWR from "swr";
+import { fetchApi } from "./base";
 
+export type AdminRole = "ADMIN" | "MACHINE_ADMIN" | "INSTITUTION";
 export interface IAdmin {
   id: React.Key;
   loginId: string;
-  password?: string;
+  loginPassword?: string;
   confirmPassword?: string;
   name: string;
-  email: string;
+  email?: string;
+  phoneNumber?: string;
+  description?: string;
+  role: AdminRole;
   createdDate?: string;
   lastModifiedDate?: string;
 }
 
-export interface IAdminFormValue
-  extends Omit<IAdmin, 'id' | 'createdDate' | 'lastModifiedDate'> {}
+export interface IAdminFormValue extends Omit<IAdmin, "id" | "createdDate" | "lastModifiedDate"> {}
+
+export interface IAdminPasswordFormValue extends Pick<IAdmin, "loginPassword" | "confirmPassword"> {}
 
 export interface IAdminsParams {
   keyword?: string;
@@ -43,11 +48,15 @@ export const useAdmin = (id: React.Key) => {
 };
 
 export const createAdmin = (value: IAdminFormValue) => {
-  return fetchApi.post('/api/admin', { body: JSON.stringify(value) });
+  return fetchApi.post("/api/admin", { body: JSON.stringify(value) });
 };
 
 export const updateAdmin = (id: React.Key, value: IAdminFormValue) => {
-  return fetchApi.patch(`/api/admin/${id}`, { body: JSON.stringify(value) });
+  return fetchApi.put(`/api/admin/${id}`, { body: JSON.stringify(value) });
+};
+
+export const updateAdminPassword = (id: React.Key, value: IAdminPasswordFormValue) => {
+  return fetchApi.put(`/api/admin/${id}/password`, { body: JSON.stringify(value) });
 };
 
 export const deleteAdmins = async (ids: React.Key[]) => {
@@ -56,4 +65,17 @@ export const deleteAdmins = async (ids: React.Key[]) => {
   }
 
   return Promise.resolve();
+};
+
+export const getAdminRoleLabel = (role?: AdminRole) => {
+  switch (role) {
+    case "ADMIN":
+      return "전체 관리자";
+    case "MACHINE_ADMIN":
+      return "자판기 관리자";
+    case "INSTITUTION":
+      return "기관 관리자";
+    default:
+      return "";
+  }
 };
