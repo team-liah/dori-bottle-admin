@@ -1,4 +1,4 @@
-import { AdminRole, IAdmin, deleteAdmins, getAdminRoleLabel, useAdmins } from "@/client/admin";
+import { IMachine, MachineState, deleteMachines, getMachineStateLabel, useMachines } from "@/client/machine";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import { ISO8601DateTime } from "@/types/common";
@@ -9,16 +9,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
-const AdminList = () => {
+const VendingList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
-  const { data, error, isLoading, mutate } = useAdmins({
-    page: router.query.page ? Number(router.query.page) - 1 : 0,
+  const { data, error, isLoading, mutate } = useMachines({
+    type: "VENDING",
+    state: router.query.state && router.query.state !== "ALL" ? (router.query.state as MachineState) : undefined,
+    no: router.query.searchType === "no" ? String(router.query.keyword) : undefined,
     name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
-    loginId: router.query.searchType === "loginId" ? String(router.query.keyword) : undefined,
-    role: router.query.role && router.query.role !== "ALL" ? (router.query.role as AdminRole) : undefined,
-    deleted: router.query.deleted ? (router.query.deleted === "true" ? true : false) : undefined,
+    addressKeyword: router.query.searchType === "address" ? String(router.query.keyword) : undefined,
+    page: router.query.page ? Number(router.query.page) - 1 : 0,
     size: 5,
   });
 
@@ -39,12 +40,12 @@ const AdminList = () => {
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
-        await deleteAdmins(ids);
-        message.success("관리자가 삭제되었습니다.");
+        await deleteMachines(ids);
+        message.success("자판기가 삭제되었습니다.");
         setSelectedRowKeys([]);
         mutate();
       } catch (error) {
-        message.error("관리자 삭제에 실패했습니다.");
+        message.error("자판기 삭제에 실패했습니다.");
       }
     },
     [mutate]
@@ -56,19 +57,19 @@ const AdminList = () => {
   };
   const hasSelected = selectedRowKeys.length > 0;
 
-  const columns: ColumnsType<IAdmin> = [
+  const columns: ColumnsType<IMachine> = [
     {
       key: "action",
       width: 120,
       align: "center",
-      render: (_value: unknown, record: IAdmin) => {
+      render: (_value: unknown, record: IMachine) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/admin/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            <Link href={`/machine/vending/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               수정
             </Link>
             <Popconfirm
-              title="관리자를 삭제하시겠습니까?"
+              title="자판기를 삭제하시겠습니까?"
               onConfirm={() => handleDelete([record.id])}
               okText="예"
               cancelText="아니오"
@@ -80,29 +81,32 @@ const AdminList = () => {
       },
     },
     {
-      title: "아이디",
-      dataIndex: "loginId",
-      render: (_value: string, record: IAdmin) => {
-        return (
-          <span>
-            {_value || "-"}
-            {record.deleted && ` (삭제됨)`}
-          </span>
-        );
-      },
+      title: "No.",
+      dataIndex: "no",
     },
     {
       title: "이름",
       dataIndex: "name",
-      render: (value: string) => {
-        return <span>{value || "-"}</span>;
+    },
+    {
+      title: "상태",
+      dataIndex: "state",
+      render: (value: MachineState) => {
+        return <span className="block">{getMachineStateLabel(value)}</span>;
       },
     },
     {
-      title: "권한",
-      dataIndex: "role",
-      render: (value: AdminRole) => {
-        return <span>{getAdminRoleLabel(value) || "-"}</span>;
+      title: "컵 개수",
+      dataIndex: "cupAmounts",
+      render: (_value: unknown, record: IMachine) => {
+        const percentage = (record.cupAmounts / record.capacity) * 100;
+        return (
+          <div>
+            <span className={`block ${percentage < 20 ? "text-rose-600" : percentage < 50 ? "text-yellow-800" : ""}`}>
+              {record.cupAmounts} / {record.capacity}개 ({percentage}%)
+            </span>
+          </div>
+        );
       },
     },
     {
@@ -144,7 +148,7 @@ const AdminList = () => {
       <DefaultTableBtn className="justify-between">
         <div>
           <Popconfirm
-            title="관리자을 삭제하시겠습니까?"
+            title="자판기를 삭제하시겠습니까?"
             disabled={!hasSelected}
             onConfirm={() => handleDelete(selectedRowKeys)}
             okText="예"
@@ -159,13 +163,13 @@ const AdminList = () => {
         </div>
 
         <div className="flex-item-list">
-          <Button type="primary" onClick={() => router.push("/admin/new")}>
-            관리자 등록
+          <Button type="primary" onClick={() => router.push("/machine/vending/new")}>
+            자판기 등록
           </Button>
         </div>
       </DefaultTableBtn>
 
-      <DefaultTable<IAdmin>
+      <DefaultTable<IMachine>
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data?.content || []}
@@ -178,10 +182,10 @@ const AdminList = () => {
           onChange: handleChangePage,
         }}
         className="mt-3"
-        countLabel={data?.pageable.totalElements}
+        countLabel={data?.pageable.totalElements || 0}
       />
     </>
   );
 };
 
-export default React.memo(AdminList);
+export default React.memo(VendingList);

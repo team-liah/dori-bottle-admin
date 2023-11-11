@@ -1,6 +1,7 @@
 import qs from "qs";
 import useSWR from "swr";
 import { fetchApi } from "./base";
+import { IPageable } from "./pageable";
 
 export type AdminRole = "ADMIN" | "MACHINE_ADMIN" | "INSTITUTION";
 export const ADMIN_ROLES: AdminRole[] = ["ADMIN", "MACHINE_ADMIN", "INSTITUTION"];
@@ -35,13 +36,7 @@ export interface IAdminsParams {
 
 export interface IAdminsResponse {
   content: IAdmin[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  numberOfElements: number;
-  first: boolean;
-  last: boolean;
-  empty: boolean;
+  pageable: IPageable;
 }
 
 export const useAdmins = (params: IAdminsParams = {}) => {
