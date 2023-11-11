@@ -173,12 +173,12 @@ const AdminList = () => {
         pagination={{
           current: Number(router.query.page || 1),
           defaultPageSize: 5,
-          total: data?.totalElements || 0,
+          total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
         className="mt-3"
-        countLabel={data?.totalElements}
+        countLabel={data?.pageable.totalElements}
       />
     </>
   );
