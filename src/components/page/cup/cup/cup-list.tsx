@@ -1,26 +1,21 @@
-import { IMachine, MachineState, deleteMachines, getMachineStateLabel, useMachines } from "@/client/machine";
+import { CupStatus, ICup, getCupStateLabel, useCups } from "@/client/cup";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
-const CollectionList = () => {
+const CupList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
-  const { data, error, isLoading, mutate } = useMachines({
-    type: "COLLECTION",
-    state: router.query.state && router.query.state !== "ALL" ? (router.query.state as MachineState) : undefined,
-    no: router.query.searchType === "no" ? String(router.query.keyword) : undefined,
-    name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
-    addressKeyword: router.query.searchType === "address" ? String(router.query.keyword) : undefined,
+  const { data, error, isLoading, mutate } = useCups({
+    status: router.query.status && router.query.status !== "ALL" ? (router.query.status as CupStatus) : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
-    size: 5,
+    size: 10,
   });
 
   const handleChangePage = useCallback(
@@ -40,12 +35,12 @@ const CollectionList = () => {
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
-        await deleteMachines(ids);
-        message.success("반납함이 삭제되었습니다.");
+        console.log(ids);
+        message.info("준비 중입니다.");
         setSelectedRowKeys([]);
         mutate();
       } catch (error) {
-        message.error("반납함 삭제에 실패했습니다.");
+        message.error("컵 삭제에 실패했습니다.");
       }
     },
     [mutate]
@@ -57,19 +52,24 @@ const CollectionList = () => {
   };
   const hasSelected = selectedRowKeys.length > 0;
 
-  const columns: ColumnsType<IMachine> = [
+  const columns: ColumnsType<ICup> = [
     {
       key: "action",
       width: 120,
       align: "center",
-      render: (_value: unknown, record: IMachine) => {
+      render: (_value: unknown, record: ICup) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/machine/collection/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            {/* <Link href={`/cup/cup/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               수정
-            </Link>
+            </Link> */}
+            {
+              <a className="px-2 py-1 text-sm btn" onClick={() => message.info("준비 중입니다.")}>
+                수정
+              </a>
+            }
             <Popconfirm
-              title="반납함을 삭제하시겠습니까?"
+              title="컵을 삭제하시겠습니까?"
               onConfirm={() => handleDelete([record.id])}
               okText="예"
               cancelText="아니오"
@@ -81,32 +81,14 @@ const CollectionList = () => {
       },
     },
     {
-      title: "No.",
-      dataIndex: "no",
-    },
-    {
-      title: "이름",
-      dataIndex: "name",
+      title: "RFID.",
+      dataIndex: "rfid",
     },
     {
       title: "상태",
-      dataIndex: "state",
-      render: (value: MachineState) => {
-        return <span className="block">{getMachineStateLabel(value)}</span>;
-      },
-    },
-    {
-      title: "컵 개수",
-      dataIndex: "cupAmounts",
-      render: (_value: unknown, record: IMachine) => {
-        const percentage = (record.cupAmounts / record.capacity) * 100;
-        return (
-          <div>
-            <span className={`block ${percentage > 80 ? "text-rose-600" : percentage > 50 ? "text-yellow-800" : ""}`}>
-              {record.cupAmounts} / {record.capacity}개 ({percentage}%)
-            </span>
-          </div>
-        );
+      dataIndex: "status",
+      render: (value: CupStatus) => {
+        return <span className="block">{getCupStateLabel(value)}</span>;
       },
     },
     {
@@ -148,7 +130,7 @@ const CollectionList = () => {
       <DefaultTableBtn className="justify-between">
         <div>
           <Popconfirm
-            title="반납함을 삭제하시겠습니까?"
+            title="컵을 삭제하시겠습니까?"
             disabled={!hasSelected}
             onConfirm={() => handleDelete(selectedRowKeys)}
             okText="예"
@@ -163,20 +145,20 @@ const CollectionList = () => {
         </div>
 
         <div className="flex-item-list">
-          <Button type="primary" onClick={() => router.push("/machine/collection/new")}>
-            반납함 등록
+          <Button type="primary" onClick={() => router.push("/cup/cup/new")}>
+            컵 등록
           </Button>
         </div>
       </DefaultTableBtn>
 
-      <DefaultTable<IMachine>
+      <DefaultTable<ICup>
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data?.content || []}
         loading={isLoading}
         pagination={{
           current: Number(router.query.page || 1),
-          defaultPageSize: 5,
+          defaultPageSize: 10,
           total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
           onChange: handleChangePage,
@@ -188,4 +170,4 @@ const CollectionList = () => {
   );
 };
 
-export default React.memo(CollectionList);
+export default React.memo(CupList);
