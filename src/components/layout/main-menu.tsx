@@ -1,5 +1,5 @@
 import { Divider } from "antd";
-import { CupSoda, Home, Lock, Megaphone, Monitor, PcCase } from "lucide-react";
+import { CupSoda, Home, Lock, Megaphone, Monitor, Package, PcCase } from "lucide-react";
 import React from "react";
 import Menu, { IMenu } from "./nav";
 
@@ -57,6 +57,20 @@ const mainMenuData: IMenu[] = [
         name: "컵 목록",
         link: {
           path: "/cup/cup/list",
+        },
+      },
+    ],
+  },
+  {
+    id: "product",
+    name: "상품 관리",
+    icon: <Package className="w-5 h-5" />,
+    submenu: [
+      {
+        id: "productList",
+        name: "버블 상품 목록",
+        link: {
+          path: "/product/bubble/list",
         },
       },
     ],
