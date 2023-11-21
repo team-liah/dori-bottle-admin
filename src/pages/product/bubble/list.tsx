@@ -3,7 +3,7 @@ import BubbleList from "@/components/page/product/bubble/bubble-list";
 import BubbleSearch from "@/components/page/product/bubble/bubble-search";
 
 const pageHeader: IPageHeader = {
-  title: "버블 목록",
+  title: "버블 상품 목록",
 };
 
 const BubbleListPage: IDefaultLayoutPage = () => {

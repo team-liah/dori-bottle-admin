@@ -5,7 +5,7 @@ import { Alert, Skeleton } from "antd";
 import { useRouter } from "next/router";
 
 const pageHeader: IPageHeader = {
-  title: "버블 수정",
+  title: "버블 상품 수정",
 };
 
 const BubbleEditPage: IDefaultLayoutPage = () => {

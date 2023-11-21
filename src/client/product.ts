@@ -11,9 +11,11 @@ export interface IBubble {
   discountPrice: number;
   discountExpiredDate: string;
   expiredDate: string;
+  createdDate: string;
+  lastModifiedDate: string;
 }
 
-export interface IBubbleFormValue extends Omit<IBubble, "id"> {}
+export interface IBubbleFormValue extends Omit<IBubble, "id" | "createdDate" | "lastModifiedDate"> {}
 
 export interface IBubblesParams {
   expired?: boolean;
@@ -32,7 +34,7 @@ export const useBubbles = (params: IBubblesParams = {}) => {
 };
 
 export const useBubble = (id: React.Key) => {
-  return useSWR<IBubble>(`/api/payment/category?${qs.stringify(id)}`);
+  return useSWR<IBubble>(`/api/payment/category/${id}`);
 };
 
 export const createBubble = (value: IBubbleFormValue) => {

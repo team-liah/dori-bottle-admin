@@ -5,11 +5,26 @@ import AuthProvider from "@/lib/auth/auth-provider";
 import "@/styles/globals.css";
 import { ConfigProvider } from "antd";
 import koKR from "antd/locale/ko_KR";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localeData from "dayjs/plugin/localeData";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
+import weekday from "dayjs/plugin/weekday";
 import { NextComponentType } from "next";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import Head from "next/head";
 import { SWRConfig } from "swr";
+
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",

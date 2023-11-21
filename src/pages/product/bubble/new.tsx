@@ -2,11 +2,17 @@ import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/
 import BubbleForm from "@/components/page/product/bubble/bubble-form";
 
 const pageHeader: IPageHeader = {
-  title: "버블 등록",
+  title: "버블 상품 등록",
 };
 
 const BubbleNewPage: IDefaultLayoutPage = () => {
-  return <BubbleForm />;
+  return (
+    <BubbleForm
+      initialValues={{
+        discountRate: 0,
+      }}
+    />
+  );
 };
 
 BubbleNewPage.getLayout = getDefaultLayout;

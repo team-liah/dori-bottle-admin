@@ -14,9 +14,9 @@ const BubbleList = () => {
   const router = useRouter();
 
   const { data, error, isLoading, mutate } = useBubbles({
-    expired: router.query.expired ? router.query.expired === "true" : undefined,
+    expired: router.query.expired !== "ALL" ? router.query.expired === "true" : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
-    size: 10,
+    size: 5,
   });
 
   const handleChangePage = useCallback(
@@ -79,6 +79,7 @@ const BubbleList = () => {
     {
       title: "개수",
       dataIndex: "amounts",
+      align: "right",
       render: (value: number) => {
         return <span>{value.toLocaleString()}</span>;
       },
@@ -86,27 +87,41 @@ const BubbleList = () => {
     {
       title: "가격",
       dataIndex: "price",
-      render: (value: number) => {
-        return <span>{value.toLocaleString()}</span>;
+      align: "right",
+      render: (value: number, record: IBubble) => {
+        return (
+          <span>
+            {!dayjs(record.discountExpiredDate).isBefore(dayjs())
+              ? record.discountPrice.toLocaleString()
+              : record.price.toLocaleString()}
+            원
+            {record.discountRate > 0 && !dayjs(record.discountExpiredDate).isBefore(dayjs()) && (
+              <span className="block text-xs text-gray-400">(할인율 {record.discountRate.toLocaleString()}%)</span>
+            )}
+          </span>
+        );
       },
     },
     {
-      title: "할인율",
-      dataIndex: "discountRate",
-      render: (value: number) => {
-        return <span>{value.toLocaleString()}</span>;
+      title: "상태",
+      dataIndex: "expiredDate",
+      align: "center",
+      width: 120,
+      render: (value: ISO8601DateTime) => {
+        return (
+          <span>
+            {dayjs(value).isBefore(dayjs()) ? (
+              <span className="text-red-500">만료</span>
+            ) : (
+              <span className="text-green-500">판매중</span>
+            )}
+          </span>
+        );
       },
     },
     {
-      title: "최종가격",
-      dataIndex: "discountPrice",
-      render: (value: number) => {
-        return <span>{value.toLocaleString()}</span>;
-      },
-    },
-    {
-      title: "할인만료일시",
-      dataIndex: "discountExpiredDate",
+      title: "만료일시",
+      dataIndex: "expiredDate",
       align: "center",
       width: 120,
       render: (value: ISO8601DateTime) => {
@@ -125,8 +140,28 @@ const BubbleList = () => {
       },
     },
     {
-      title: "만료일시",
-      dataIndex: "expiredDate",
+      title: "생성일시",
+      dataIndex: "createdDate",
+      align: "center",
+      width: 120,
+      render: (value: ISO8601DateTime) => {
+        return (
+          <div className="text-sm">
+            {value ? (
+              <>
+                <span className="block">{dayjs(value).format("YYYY/MM/DD")}</span>
+                <span className="block">{dayjs(value).format("HH:mm")}</span>
+              </>
+            ) : (
+              <span className="block">-</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      title: "수정일시",
+      dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
       render: (value: ISO8601DateTime) => {
@@ -183,7 +218,7 @@ const BubbleList = () => {
         loading={isLoading}
         pagination={{
           current: Number(router.query.page || 1),
-          defaultPageSize: 10,
+          defaultPageSize: 5,
           total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
           onChange: handleChangePage,
