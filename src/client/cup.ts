@@ -40,6 +40,18 @@ export const createCup = (value: ICupFormValue) => {
   return fetchApi.post("/api/cup", { body: JSON.stringify(value) });
 };
 
+export const updateCup = (id: React.Key, value: ICupFormValue) => {
+  return fetchApi.put(`/api/cup/${id}`, { body: JSON.stringify(value) });
+};
+
+export const deleteCups = async (ids: React.Key[]) => {
+  for (const id of ids) {
+    await fetchApi.delete(`/api/cup/${id}`);
+  }
+
+  return Promise.resolve();
+};
+
 export const getCupStateLabel = (state?: CupStatus) => {
   switch (state) {
     case "AVAILABLE":

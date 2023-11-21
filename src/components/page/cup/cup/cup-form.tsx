@@ -1,11 +1,11 @@
-import { CupStatus, ICupFormValue, createCup, getCupStateLabel } from "@/client/cup";
+import { CUP_STATUSES, ICupFormValue, createCup, getCupStateLabel, updateCup } from "@/client/cup";
 import { IPostFormValue } from "@/client/post";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
 import { useAuth } from "@/lib/auth/auth-provider";
 import { getErrorMessage } from "@/utils/error";
-import { Button, Divider, Form, Input, message } from "antd";
+import { Button, Form, Input, Select, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
@@ -28,9 +28,8 @@ const CollectionForm = ({ id, initialValues }: ICollectionFormProps) => {
       setIsLoading(true);
 
       if (id) {
-        // await updateCup(id, formValue);
-        // messageApi.success("수정되었습니다");
-        messageApi.info("준비 중입니다.");
+        await updateCup(id, formValue);
+        messageApi.success("수정되었습니다");
       } else {
         await createCup(formValue);
         messageApi.success("생성되었습니다");
@@ -56,13 +55,20 @@ const CollectionForm = ({ id, initialValues }: ICollectionFormProps) => {
               <Input placeholder="컵 RFID를 입력하세요" />
             </Form.Item>
           </FormGroup>
-          <Divider />
         </FormSection>
 
         {!!id && (
           <FormSection title="기타 정보" description="컵 상세 정보입니다.">
             <FormGroup title="컵 상태">
-              <Form.Item>{getCupStateLabel(initialValues?.status as CupStatus)}</Form.Item>
+              <Form.Item name="status">
+                <Select style={{ width: 200 }}>
+                  {CUP_STATUSES.map((status) => (
+                    <Select.Option key={status} value={status}>
+                      {getCupStateLabel(status)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
             </FormGroup>
             <FormGroup title="생성 날짜">
               <Form.Item>{dayjs(initialValues?.createdDate).format("YYYY/MM/DD HH:mm")}</Form.Item>
