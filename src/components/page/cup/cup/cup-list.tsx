@@ -1,10 +1,11 @@
-import { CupStatus, ICup, getCupStateLabel, useCups } from "@/client/cup";
+import { CupStatus, ICup, deleteCups, getCupStateLabel, useCups } from "@/client/cup";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
@@ -35,8 +36,8 @@ const CupList = () => {
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
-        console.log(ids);
-        message.info("준비 중입니다.");
+        await deleteCups(ids as string[]);
+        message.success("컵이 삭제되었습니다.");
         setSelectedRowKeys([]);
         mutate();
       } catch (error) {
@@ -60,14 +61,9 @@ const CupList = () => {
       render: (_value: unknown, record: ICup) => {
         return (
           <span className="flex justify-center gap-2">
-            {/* <Link href={`/cup/cup/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            <Link href={`/cup/cup/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               수정
-            </Link> */}
-            {
-              <a className="px-2 py-1 text-sm btn" onClick={() => message.info("준비 중입니다.")}>
-                수정
-              </a>
-            }
+            </Link>
             <Popconfirm
               title="컵을 삭제하시겠습니까?"
               onConfirm={() => handleDelete([record.id])}
