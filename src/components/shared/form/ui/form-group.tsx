@@ -7,9 +7,9 @@ interface IFormGroupProps {
 
 const FormGroup = ({ title, description, children }: PropsWithChildren<IFormGroupProps>) => {
   return (
-    <div className="mb-0 lg:flex lg:mb-3">
+    <div className="mb-0 lg:flex lg:mb-3 lg:items-center">
       <div className="flex-none w-full mt-1 mb-3 lg:w-48 lg:mb-0">
-        <div>{title}</div>
+        <div className="whitespace-pre">{title}</div>
         <div className="text-gray-400">{description}</div>
       </div>
       <div className="min-w-0 mb-5 grow lg:-mb-3">{children}</div>
