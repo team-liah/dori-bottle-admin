@@ -715,7 +715,7 @@ ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-antd@^5.11.2:
+antd@^5.7.3:
   version "5.11.2"
   resolved "https://registry.yarnpkg.com/antd/-/antd-5.11.2.tgz#5db25aab6658715de36ea36ab840891a974a71de"
   integrity sha512-7/yqmfXpShHH0MJQOgv3vX9PUFwctyBm/G5L0i/S4AQy20ON6ZZ2UkjmWxgwg3vq2CEHKyVGTHozpH9WwDizgw==
@@ -1121,11 +1121,6 @@ dayjs@^1.11.1:
   version "1.11.7"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
   integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
-
-dayjs@^1.11.9:
-  version "1.11.10"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
-  integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
 
 debug@^3.2.7:
   version "3.2.7"

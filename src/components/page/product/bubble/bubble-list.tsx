@@ -14,7 +14,7 @@ const BubbleList = () => {
   const router = useRouter();
 
   const { data, error, isLoading, mutate } = useBubbles({
-    expired: router.query.expired !== "ALL" ? router.query.expired === "true" : undefined,
+    expired: router.query.status === "true" ? true : router.query.status === "false" ? false : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     size: 5,
   });
