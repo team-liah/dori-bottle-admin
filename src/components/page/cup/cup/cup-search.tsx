@@ -1,9 +1,9 @@
-import { CUP_STATUSES, getCupStateLabel } from "@/client/cup";
-import { IPostsParams } from "@/client/post";
+import { CUP_STATUSES, ICupsParams, getCupStateLabel } from "@/client/cup";
 import DefaultSearchForm from "@/components/shared/form/ui/default-search-form";
 import FieldInline from "@/components/shared/form/ui/field-inline";
 import FormSearch from "@/components/shared/form/ui/form-search";
-import { Button, Form, Radio } from "antd";
+import useNFCReader from "@/hooks/useNFCReader";
+import { Button, Form, Input, Radio, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { Search } from "lucide-react";
 import { useRouter } from "next/router";
@@ -12,9 +12,10 @@ import React, { useCallback } from "react";
 const CupSearch = () => {
   const [form] = useForm();
   const router = useRouter();
+  const { scanning, onScanning, stopScanning } = useNFCReader();
 
   const handleFinish = useCallback(
-    (formValue: IPostsParams) => {
+    async (formValue: ICupsParams) => {
       router.push({
         pathname: router.pathname,
         query: { ...router.query, ...formValue },
@@ -41,16 +42,31 @@ const CupSearch = () => {
               </Radio.Group>
             </Form.Item>
           </FieldInline>
-          {/* <FieldInline>
-            <Form.Item label="검색조건" name="searchType" initialValue="name">
+          <FieldInline>
+            <Form.Item label="검색조건" name="searchType" initialValue="rfid">
               <Select>
                 <Select.Option value="rfid">rfid.</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item name="keyword" className="grow">
-              <Input placeholder="제목 또는 내용을 입력해주세요" />
+              <Input placeholder="키워드를 입력해주세요" />
             </Form.Item>
-          </FieldInline> */}
+            <Button
+              className="mb-4"
+              onClick={() =>
+                scanning
+                  ? stopScanning()
+                  : onScanning((serialNumber) =>
+                      handleFinish({
+                        searchType: "rfid",
+                        keyword: serialNumber,
+                      })
+                    )
+              }
+            >
+              {scanning ? "취소" : "스캔"}
+            </Button>
+          </FieldInline>
         </div>
       </FormSearch>
       <div className="flex justify-center gap-2">
