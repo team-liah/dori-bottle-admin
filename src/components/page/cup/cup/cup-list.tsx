@@ -1,7 +1,9 @@
-import { CupStatus, ICup, deleteCups, getCupStateLabel, useCups } from "@/client/cup";
+import { CupStatus, ICup, ICupFormValue, createCup, deleteCups, getCupStateLabel, useCups } from "@/client/cup";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
+import useNFCReader from "@/hooks/useNFCReader";
 import { ISO8601DateTime } from "@/types/common";
+import { getErrorMessage } from "@/utils/error";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -12,8 +14,10 @@ import React, { useCallback, useState } from "react";
 const CupList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { scanning, onScanning, stopScanning } = useNFCReader();
 
   const { data, error, isLoading, mutate } = useCups({
+    rfid: router.query.searchType === "rfid" ? String(router.query.keyword) : undefined,
     status: router.query.status && router.query.status !== "ALL" ? (router.query.status as CupStatus) : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     size: 10,
@@ -32,6 +36,19 @@ const CupList = () => {
   const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   }, []);
+
+  const handleScan = useCallback(
+    async (formValue: ICupFormValue) => {
+      try {
+        await createCup(formValue);
+        message.success(`${formValue.rfid} 등록되었습니다`);
+        mutate();
+      } catch (e: unknown) {
+        message.error(await getErrorMessage(e));
+      }
+    },
+    [mutate]
+  );
 
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
@@ -143,6 +160,18 @@ const CupList = () => {
         <div className="flex-item-list">
           <Button type="primary" onClick={() => router.push("/cup/cup/new")}>
             컵 등록
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (scanning) {
+                stopScanning();
+              } else {
+                onScanning((serialNumber) => handleScan({ rfid: serialNumber }));
+              }
+            }}
+          >
+            {scanning ? "취소" : "컵 스캔"}
           </Button>
         </div>
       </DefaultTableBtn>

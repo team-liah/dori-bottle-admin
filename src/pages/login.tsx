@@ -1,6 +1,5 @@
 import GradientBg from "@/components/page/login/gradient-bg";
 import LoginForm from "@/components/page/login/login-form";
-import ScanButton from "@/components/page/sample/scan-nfc";
 import { Verified } from "lucide-react";
 
 const LoginPage = () => {
@@ -45,7 +44,6 @@ const LoginPage = () => {
 
             <div className="w-full px-2 mt-12 sm:px-6">
               <LoginForm />
-              <ScanButton />
             </div>
           </section>
         </div>

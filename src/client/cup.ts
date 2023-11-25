@@ -17,6 +17,9 @@ export interface ICup {
 export interface ICupFormValue extends Omit<ICup, "id"> {}
 
 export interface ICupsParams {
+  searchType?: string;
+  keyword?: string;
+  rfid?: string;
   status?: CupStatus;
   page?: number;
   size?: number;
