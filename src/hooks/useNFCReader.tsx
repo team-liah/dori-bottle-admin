@@ -19,7 +19,7 @@ const useNFCReader = () => {
       message.error("이미 스캔 중입니다.");
       return;
     }
-    if (ndef) {
+    if (ndef.current) {
       try {
         abortControllerRef.current = new AbortController();
         await ndef.current.scan({ signal: abortControllerRef.current.signal });
