@@ -9,8 +9,8 @@ export const BLOCK_CAUSE_TYPES: BlockCauseType[] = ["FIVE_PENALTIES", "LOST_CUP_
 export interface IPenalty {
   id: React.Key;
   userId: React.Key;
-  penaltyType: PenaltyType;
-  description: string;
+  type: PenaltyType;
+  cause: string;
   createdDate?: string;
   lastModifiedDate?: string;
 }
@@ -25,12 +25,29 @@ export interface IBlockCause {
   clearPrice?: number;
 }
 
-export const setUserPenalty = (id: React.Key) => {
-  return fetchApi.post(`/api/user/${id}/penalty`);
+export interface IPenaltyFormValue {
+  penaltyType: PenaltyType;
+  penaltyCause: string;
+}
+
+export const setUserPenalty = (id: React.Key, value: IPenaltyFormValue) => {
+  return fetchApi.post(`/api/user/${id}/penalty`, { body: JSON.stringify(value) });
 };
 
-export const deleteUserPenalty = (id: React.Key, penaltyId: React.Key) => {
-  return fetchApi.delete(`/api/user/${id}/penalty/${penaltyId}`);
+export const deleteUserPenalty = async (id: React.Key, penaltyIds: React.Key[]) => {
+  for (const penaltyId of penaltyIds) {
+    await fetchApi.delete(`/api/user/${id}/penalty/${penaltyId}`);
+  }
+
+  return Promise.resolve();
+};
+
+export const deleteUserBlockCause = async (id: React.Key, blockIds: React.Key[]) => {
+  for (const blockId of blockIds) {
+    await fetchApi.delete(`/api/user/${id}/block-cause/${blockId}`);
+  }
+
+  return Promise.resolve();
 };
 
 export const getPenaltyTypeLabel = (type?: PenaltyType) => {

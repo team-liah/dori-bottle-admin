@@ -48,7 +48,7 @@ const UserSearch = () => {
             </Form.Item>
           </FieldInline>
           <FieldInline>
-            <Form.Item label="블록 여부" name="blocked" initialValue={"ALL"}>
+            <Form.Item label="블락 여부" name="blocked" initialValue={"ALL"}>
               <Radio.Group>
                 <Radio value={"ALL"} key={"ALL"}>
                   전체
