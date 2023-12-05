@@ -1,11 +1,7 @@
-import { IDashboardResponse } from "@/client/sample/dashboard";
+import { useStatistic } from "@/client/payment";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import React from "react";
 import CountUp from "react-countup";
-
-interface IStatisticSampleProps {
-  data: IDashboardResponse;
-}
 
 const renderChangeRate = (value: number) => {
   if (value > 0) {
@@ -25,37 +21,40 @@ const renderChangeRate = (value: number) => {
   }
 };
 
-const StatisticSample = ({ data }: IStatisticSampleProps) => {
+const StatisticSample = () => {
+  const data = useStatistic();
+
+  if (!data) return <></>;
   return (
     <>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <div className="p-5 border rounded-lg ">
-          <div>방문자</div>
+          <div>총 매출</div>
           <div className="mt-3">
             <div className="flex items-center mt-3">
               <div className="text-2xl font-semibold grow">
-                <CountUp end={data.visitor.value} separator="," />명
+                <CountUp end={data.totalAmount.value} separator="," />명
               </div>
-              <div>{renderChangeRate(data.visitor.rate)}</div>
+              <div>{renderChangeRate(data.totalAmount.rate)}</div>
             </div>
           </div>
         </div>
         <div className="p-5 border rounded-lg ">
-          <div>주문</div>
+          <div>버블 충전</div>
           <div className="flex items-center mt-3">
             <div className="text-2xl font-semibold grow">
-              <CountUp end={data.order.value} separator="," />건
+              <CountUp end={data.savePointAmount.value} separator="," />건
             </div>
-            <div>{renderChangeRate(data.order.rate)}</div>
+            <div>{renderChangeRate(data.savePointAmount.rate)}</div>
           </div>
         </div>
         <div className="p-5 border rounded-lg ">
-          <div>매출</div>
+          <div>패널티 결제</div>
           <div className="flex items-center mt-3">
             <div className="text-2xl font-semibold grow">
-              <CountUp end={data.income.value} separator="," />원
+              <CountUp end={data.penaltyAmount.value} separator="," />원
             </div>
-            <div>{renderChangeRate(data.income.rate)}</div>
+            <div>{renderChangeRate(data.penaltyAmount.rate)}</div>
           </div>
         </div>
       </div>
