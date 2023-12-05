@@ -1,6 +1,7 @@
+import { useAuth } from "@/lib/auth/auth-provider";
 import { Divider } from "antd";
-import { CupSoda, Home, Lock, Megaphone, Monitor, Package, PcCase, School, Users } from "lucide-react";
-import React from "react";
+import { CupSoda, Home, Lock, Megaphone, Package, PcCase, School, Users } from "lucide-react";
+import React, { useEffect } from "react";
 import Menu, { IMenu } from "./nav";
 
 const mainMenuData: IMenu[] = [
@@ -8,6 +9,7 @@ const mainMenuData: IMenu[] = [
     id: "home",
     name: "홈",
     icon: <Home className="w-5 h-5" />,
+    permission: ["ADMIN", "MACHINE_ADMIN"],
     link: {
       path: "/",
     },
@@ -16,6 +18,7 @@ const mainMenuData: IMenu[] = [
     id: "admin",
     name: "관리자",
     icon: <Lock className="w-5 h-5" />,
+    permission: ["ADMIN"],
     submenu: [
       {
         id: "adminList",
@@ -30,6 +33,7 @@ const mainMenuData: IMenu[] = [
     id: "user",
     name: "회원 관리",
     icon: <Users className="w-5 h-5" />,
+    permission: ["ADMIN"],
     submenu: [
       {
         id: "userList",
@@ -44,6 +48,7 @@ const mainMenuData: IMenu[] = [
     id: "group",
     name: "기관 관리",
     icon: <School className="w-5 h-5" />,
+    permission: ["ADMIN"],
     submenu: [
       {
         id: "groupList",
@@ -58,6 +63,7 @@ const mainMenuData: IMenu[] = [
     id: "machine",
     name: "기기 관리",
     icon: <PcCase className="w-5 h-5" />,
+    permission: ["ADMIN", "MACHINE_ADMIN"],
     submenu: [
       {
         id: "vendingList",
@@ -79,6 +85,7 @@ const mainMenuData: IMenu[] = [
     id: "cup",
     name: "컵 관리",
     icon: <CupSoda className="w-5 h-5" />,
+    permission: ["ADMIN", "MACHINE_ADMIN"],
     submenu: [
       {
         id: "cupList",
@@ -93,6 +100,7 @@ const mainMenuData: IMenu[] = [
     id: "product",
     name: "상품 관리",
     icon: <Package className="w-5 h-5" />,
+    permission: ["ADMIN"],
     submenu: [
       {
         id: "productList",
@@ -107,6 +115,7 @@ const mainMenuData: IMenu[] = [
     id: "post",
     name: "게시글 관리",
     icon: <Megaphone className="w-5 h-5" />,
+    permission: ["ADMIN"],
     submenu: [
       {
         id: "noticeList",
@@ -126,23 +135,16 @@ const mainMenuData: IMenu[] = [
   },
 ];
 
-const devMenuData: IMenu[] = [
-  {
-    id: "dev",
-    name: "사용 가이드",
-    icon: <Monitor className="w-5 h-5" />,
-    submenu: [
-      {
-        name: "폼",
-        link: {
-          path: "/sample/form",
-        },
-      },
-    ],
-  },
-];
-
 const MainMenu = () => {
+  const { profile } = useAuth();
+  const [renderedMenu, setRenderedMenu] = React.useState<IMenu[]>([]);
+
+  useEffect(() => {
+    if (profile) setRenderedMenu(mainMenuData.filter((menu) => menu.permission?.includes(profile?.role)));
+  }, [profile]);
+
+  if (!profile) return <></>;
+
   return (
     <>
       <>
@@ -150,14 +152,7 @@ const MainMenu = () => {
           메인
         </Divider>
 
-        <Menu data={mainMenuData} />
-      </>
-      <>
-        <Divider orientation="left" plain>
-          개발
-        </Divider>
-
-        <Menu data={devMenuData} />
+        <Menu data={renderedMenu} />
       </>
     </>
   );

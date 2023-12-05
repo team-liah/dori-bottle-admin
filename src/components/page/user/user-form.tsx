@@ -164,7 +164,7 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
               {initialValues?.penalties?.map((record) => (
                 <Popover key={record.id} placement="bottomLeft" content={<UserPenaltyDetail penalty={record} />}>
                   <Tag
-                    className="mx-2 cursor-pointer"
+                    className="m-2 cursor-pointer"
                     color="error"
                     closable={true}
                     onClose={() => handleDeletePenalty([record.id])}

@@ -1,3 +1,4 @@
+import { AdminRole } from "@/client/admin";
 import { NextRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 import React from "react";
@@ -18,6 +19,7 @@ export interface IMenu {
   icon?: React.ReactNode;
   isActive?: (router: NextRouter, link: IMenu["link"]) => boolean;
   submenu?: IMenu[];
+  permission?: AdminRole[];
 }
 
 export const isEqualPath = (router: NextRouter, link: IMenu["link"]) => {

@@ -5,11 +5,11 @@ const next = require("next");
 const https = require("https");
 const fs = require("fs");
 
-const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
-const handle = app.getRequestHandler();
-
 const PORT = 4000;
+const HOSTNAME = "localhost";
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev, hostname: HOSTNAME, port: PORT });
+const handle = app.getRequestHandler();
 
 const httpsOptions = {
   key: fs.readFileSync("./key.pem"),

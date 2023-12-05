@@ -20,6 +20,7 @@
     "antd": "^5.7.3",
     "dayjs": "^1.11.1",
     "framer-motion": "^10.15.0",
+    "jwt-decode": "^4.0.0",
     "ky": "^0.33.3",
     "ky-universal": "^0.12.0",
     "lucide-react": "^0.263.1",
