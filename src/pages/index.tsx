@@ -15,10 +15,14 @@ const IndexPage: IDefaultLayoutPage = () => {
     <>
       <h2 className="title">👋 {profile?.name || "관리자"}님 안녕하세요!</h2>
 
-      <StatisticSample />
-      <Divider />
+      {profile?.role === "ADMIN" && (
+        <>
+          <StatisticSample />
+          <Divider />
 
-      <CalendarSample />
+          <CalendarSample />
+        </>
+      )}
     </>
   );
 };
