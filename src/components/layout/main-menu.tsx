@@ -1,5 +1,5 @@
 import { Divider } from "antd";
-import { CupSoda, Home, Lock, Megaphone, Monitor, Package, PcCase, School } from "lucide-react";
+import { CupSoda, Home, Lock, Megaphone, Monitor, Package, PcCase, School, Users } from "lucide-react";
 import React from "react";
 import Menu, { IMenu } from "./nav";
 
@@ -22,6 +22,20 @@ const mainMenuData: IMenu[] = [
         name: "관리자 목록",
         link: {
           path: "/admin/list",
+        },
+      },
+    ],
+  },
+  {
+    id: "user",
+    name: "회원 관리",
+    icon: <Users className="w-5 h-5" />,
+    submenu: [
+      {
+        id: "userList",
+        name: "회원 목록",
+        link: {
+          path: "/user/list",
         },
       },
     ],
