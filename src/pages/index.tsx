@@ -1,13 +1,10 @@
-import { Divider } from 'antd';
-import {
-  IDefaultLayoutPage,
-  IPageHeader,
-  getDefaultLayout,
-} from '@/components/layout/default-layout';
-import { useAuth } from '@/lib/auth/auth-provider';
+import { IDefaultLayoutPage, IPageHeader, getDefaultLayout } from "@/components/layout/default-layout";
+import CalendarSample from "@/components/page/index/calendar-sample";
+import { useAuth } from "@/lib/auth/auth-provider";
+import { Divider } from "antd";
 
 const pageHeader: IPageHeader = {
-  title: 'Welcome',
+  title: "Welcome",
 };
 
 const IndexPage: IDefaultLayoutPage = () => {
@@ -15,9 +12,12 @@ const IndexPage: IDefaultLayoutPage = () => {
 
   return (
     <>
-      <h2 className="title">👋 {profile?.name || '관리자'}님 안녕하세요!</h2>
+      <h2 className="title">👋 {profile?.name || "관리자"}님 안녕하세요!</h2>
 
+      {/* <StatisticSample data={} /> */}
       <Divider />
+
+      <CalendarSample />
     </>
   );
 };
