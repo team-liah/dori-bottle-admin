@@ -33,6 +33,13 @@ jobs:
       - name: Debugging
         run: echo "image=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest"
 
+        # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
+      - name: Generate Environment Variables File for Production
+        run: |
+          echo "NEXT_PUBLIC_NCP_CLIENT_ID=$NEXT_PUBLIC_NCP_CLIENT_ID" >> .env.production
+        env:
+          NEXT_PUBLIC_NCP_CLIENT_ID: ${{ vars.NEXT_PUBLIC_NCP_CLIENT_ID }}
+
       - name: Build, tag, and push image to Amazon ECR
         run: |
           docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
