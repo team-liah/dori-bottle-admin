@@ -8,10 +8,13 @@ const useMap = () => {
     mapRef.current?.morph(new window.naver.maps.LatLng(latitude, longitude), 16);
   }, []);
 
-  const addMachineMarker = useCallback((machine: IMachine, onChangePosition?: (x: number, y: number) => void) => {
+  const addMachineMarker = useCallback((machine?: IMachine, onChangePosition?: (x: number, y: number) => void) => {
     if (mapRef.current === undefined) return;
     const marker = new window.naver.maps.Marker({
-      position: new window.naver.maps.LatLng(machine.location.latitude, machine.location.longitude),
+      position: new window.naver.maps.LatLng(
+        machine?.location.latitude || 37.596578,
+        machine?.location.longitude || 127.052435
+      ),
       map: mapRef.current,
     });
 
@@ -24,7 +27,7 @@ const useMap = () => {
   const initializeMap = useCallback(() => {
     if (!window.naver.maps) return;
     const mapOptions = {
-      center: new window.naver.maps.LatLng(37.3595704, 127.105399),
+      center: new window.naver.maps.LatLng(37.596578, 127.052435),
       zoom: 13,
       minZoom: 9,
       scaleControl: false,
