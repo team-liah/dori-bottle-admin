@@ -36,6 +36,7 @@
     "swr": "^2.2.0"
   },
   "devDependencies": {
+    "@types/navermaps": "^3.7.4",
     "@types/node": "18.11.18",
     "@types/numeral": "^2.0.2",
     "@types/qs": "^6.9.7",
