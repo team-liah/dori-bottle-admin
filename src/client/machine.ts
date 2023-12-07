@@ -24,6 +24,10 @@ export interface IMachine {
   capacity: number;
   cupAmounts: number;
   state: MachineState;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
   createdDate?: string;
   lastModifiedDate?: string;
 }

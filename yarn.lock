@@ -552,10 +552,22 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.2.tgz#ff02bc3dc8317cd668dfec247b750ba1f1d62453"
   integrity sha512-VeiPZ9MMwXjO32/Xu7+OwflfmeoRwkE/qzndw42gGtgJwZopBnzy2gD//NN1+go1mADzkDcqf/KnFRSjTJ8xJA==
 
+"@types/geojson@*":
+  version "7946.0.13"
+  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.13.tgz#e6e77ea9ecf36564980a861e24e62a095988775e"
+  integrity sha512-bmrNrgKMOhM3WsafmbGmC+6dsF2Z308vLFsQ3a/bT8X8Sv5clVYpPars/UPq+sAaJP+5OoLAYgwbkS5QEJdLUQ==
+
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
+
+"@types/navermaps@^3.7.4":
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/@types/navermaps/-/navermaps-3.7.4.tgz#84bfcfba4457f83f5b4eb7f7c6738b568e14d485"
+  integrity sha512-fAazswZgl/l/1Mw375hJcNAC244SiTA0+Y6HE8atkVAtrdawlpgpkaRMCpFX+15iDiQzTfO0MmE+y1+6NpWFuQ==
+  dependencies:
+    "@types/geojson" "*"
 
 "@types/node@18.11.18":
   version "18.11.18"
