@@ -6,7 +6,16 @@ const pageHeader: IPageHeader = {
 };
 
 const AdminNewPage: IDefaultLayoutPage = () => {
-  return <CollectionForm />;
+  return (
+    <CollectionForm
+      initialValues={{
+        location: {
+          latitude: 37.596578,
+          longitude: 127.052435,
+        },
+      }}
+    />
+  );
 };
 
 AdminNewPage.getLayout = getDefaultLayout;
