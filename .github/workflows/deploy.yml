@@ -37,8 +37,10 @@ jobs:
       - name: Generate Environment Variables File for Production
         run: |
           echo "NEXT_PUBLIC_NCP_CLIENT_ID=$NEXT_PUBLIC_NCP_CLIENT_ID" >> .env.production
+          echo "BASE_API_URL=$BASE_API_URL" >> .env.production
         env:
           NEXT_PUBLIC_NCP_CLIENT_ID: ${{ vars.NEXT_PUBLIC_NCP_CLIENT_ID }}
+          BASE_API_URL: ${{ vars.BASE_API_URL }}
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
