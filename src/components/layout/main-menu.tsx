@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth/auth-provider";
 import { Divider } from "antd";
-import { CupSoda, Home, Lock, Megaphone, Package, PcCase, School, Users } from "lucide-react";
+import { CreditCard, CupSoda, Home, Lock, Megaphone, Package, PcCase, School, Users } from "lucide-react";
 import React, { useEffect } from "react";
 import Menu, { IMenu } from "./nav";
 
@@ -107,6 +107,21 @@ const mainMenuData: IMenu[] = [
         name: "버블 상품 목록",
         link: {
           path: "/product/bubble/list",
+        },
+      },
+    ],
+  },
+  {
+    id: "payment",
+    name: "결제 관리",
+    icon: <CreditCard className="w-5 h-5" />,
+    permission: ["ADMIN"],
+    submenu: [
+      {
+        id: "paymentList",
+        name: "결제 목록",
+        link: {
+          path: "/payment/list",
         },
       },
     ],

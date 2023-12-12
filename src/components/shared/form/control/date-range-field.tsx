@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import React from "react";
 
 interface IDateRangeFieldProps {
-  value?: (dayjs.Dayjs | null)[];
-  onChange?: (value: (dayjs.Dayjs | null)[]) => void;
+  value?: (string | null)[]; // 2023-12-10T02:50:11.508630Z"
+  onChange?: (value: (string | null)[]) => void;
 }
 
 const dateRangeOptions = [
@@ -19,17 +19,17 @@ const dateRangeOptions = [
 const DateRangeField = ({ value, onChange }: IDateRangeFieldProps) => {
   const handleDateRangeChange = (e: RadioChangeEvent) => {
     if (e.target.value === "today") {
-      onChange?.([dayjs(), dayjs()]);
+      onChange?.([dayjs().format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     } else if (e.target.value === "1week") {
-      onChange?.([dayjs().subtract(1, "week"), dayjs()]);
+      onChange?.([dayjs().subtract(1, "week").format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     } else if (e.target.value === "1month") {
-      onChange?.([dayjs().subtract(1, "month"), dayjs()]);
+      onChange?.([dayjs().subtract(1, "month").format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     } else if (e.target.value === "3months") {
-      onChange?.([dayjs().subtract(3, "months"), dayjs()]);
+      onChange?.([dayjs().subtract(3, "months").format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     } else if (e.target.value === "6months") {
-      onChange?.([dayjs().subtract(6, "months"), dayjs()]);
+      onChange?.([dayjs().subtract(6, "months").format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     } else if (e.target.value === "1year") {
-      onChange?.([dayjs().subtract(1, "year"), dayjs()]);
+      onChange?.([dayjs().subtract(1, "year").format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     }
   };
 
@@ -38,17 +38,20 @@ const DateRangeField = ({ value, onChange }: IDateRangeFieldProps) => {
       <DatePicker
         placeholder="시작 날짜"
         onChange={(v: dayjs.Dayjs | null) => {
-          onChange?.([v, value?.[1] || null]);
+          onChange?.([v?.format("YYYY-MM-DD") || null, value?.[1] || null]);
         }}
-        value={value?.[0]}
+        value={value?.[0] ? dayjs(value[0]) : null}
       />
       <span>~</span>
       <DatePicker
         placeholder="종료 날짜"
         onChange={(v: dayjs.Dayjs | null) => {
-          onChange?.([value?.[0] || null, v]);
+          onChange?.([value?.[0] || null, v?.format("YYYY-MM-DD") || null]);
         }}
-        value={value?.[1]}
+        disabledDate={(current) => {
+          return value?.[0] ? current < dayjs(value[0]).startOf("day") : false;
+        }}
+        value={value?.[1] ? dayjs(value[1]) : null}
       />
       <div className="flex items-center gap-1">
         <Radio.Group
