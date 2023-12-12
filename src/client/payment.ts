@@ -161,7 +161,7 @@ export const getPaymentStateLabel = (state?: PaymentStatus) => {
 export const getPaymentTypeLabel = (type?: PaymentType) => {
   switch (type) {
     case "SAVE_POINT":
-      return "포인트 적립";
+      return "버블 충전";
     case "LOST_CUP":
       return "컵 분실";
     case "UNBLOCK_ACCOUNT":
@@ -187,9 +187,9 @@ export const getCardTypeLabel = (type?: CardType) => {
 export const getCardOwnerTypeLabel = (type?: CardOwnerType) => {
   switch (type) {
     case "PERSONAL":
-      return "개인카드";
+      return "개인";
     case "CORPORATE":
-      return "법인카드";
+      return "법인";
     default:
       return "알 수 없음";
   }
@@ -253,7 +253,7 @@ export const getBankProviderLabel = (provider?: BankProvider) => {
 export const getSaveTypeLabel = (type?: SaveType) => {
   switch (type) {
     case "PAY":
-      return "결제";
+      return "충전";
     case "REWARD":
       return "리워드";
     default:

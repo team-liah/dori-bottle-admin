@@ -77,17 +77,19 @@ const PaymentList = () => {
       render: (_value: unknown, record: IPayment) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/payment/payment/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            <Link href={`/payment/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               상세
             </Link>
-            <Popconfirm
-              title="결제를 취소하시겠습니까?"
-              onConfirm={() => handleDelete([record.id])}
-              okText="예"
-              cancelText="아니오"
-            >
-              <a className="px-2 py-1 text-sm btn">취소</a>
-            </Popconfirm>
+            {record.status === "SUCCEEDED" && (
+              <Popconfirm
+                title="결제를 취소하시겠습니까?"
+                onConfirm={() => handleDelete([record.id])}
+                okText="예"
+                cancelText="아니오"
+              >
+                <a className="px-2 py-1 text-sm btn">취소</a>
+              </Popconfirm>
+            )}
           </span>
         );
       },
