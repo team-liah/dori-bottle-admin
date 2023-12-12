@@ -4,9 +4,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const token = jwtDecode<{ role: string }>(request.cookies.get("access_token")?.value || "");
+  const access_token = request.cookies.get("access_token");
+  const token = access_token ? jwtDecode<{ role: string }>(access_token.value) : null;
 
-  if (token.role === "ROLE_ADMIN") {
+  if (token?.role === "ROLE_ADMIN") {
     return NextResponse.next();
   }
 
