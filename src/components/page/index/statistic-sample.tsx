@@ -1,4 +1,4 @@
-import { useStatistic } from "@/client/payment";
+import { useStatistic } from "@/client/statistic";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import React from "react";
 import CountUp from "react-countup";
