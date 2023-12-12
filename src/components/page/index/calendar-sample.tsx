@@ -1,4 +1,4 @@
-import { usePaymentStatitics } from "@/client/payment";
+import { usePaymentStatitics } from "@/client/statistic";
 import { Badge, BadgeProps, Calendar, CalendarProps, Divider } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import React, { useState } from "react";
