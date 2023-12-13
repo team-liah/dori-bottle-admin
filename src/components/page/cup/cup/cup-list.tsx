@@ -2,6 +2,7 @@ import { CupStatus, ICup, ICupFormValue, createCup, deleteCups, getCupStateLabel
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import useNFCReader from "@/hooks/useNFCReader";
+import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
 import { getErrorMessage } from "@/utils/error";
 import { Alert, Button, Popconfirm, message } from "antd";
@@ -9,33 +10,20 @@ import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 const CupList = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
   const { scanning, onScanning, stopScanning } = useNFCReader();
 
   const { data, error, isLoading, mutate } = useCups({
     rfid: router.query.searchType === "rfid" ? String(router.query.keyword) : undefined,
     status: router.query.status && router.query.status !== "ALL" ? (router.query.status as CupStatus) : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     size: 10,
   });
-
-  const handleChangePage = useCallback(
-    (pageNumber: number) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: pageNumber },
-      });
-    },
-    [router]
-  );
-
-  const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  }, []);
 
   const handleScan = useCallback(
     async (formValue: ICupFormValue) => {
@@ -55,19 +43,20 @@ const CupList = () => {
       try {
         await deleteCups(ids as string[]);
         message.success("컵이 삭제되었습니다.");
-        setSelectedRowKeys([]);
+        onSelectChange([]);
         mutate();
       } catch (error) {
         message.error("컵 삭제에 실패했습니다.");
       }
     },
-    [mutate]
+    [mutate, onSelectChange]
   );
 
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
   const hasSelected = selectedRowKeys.length > 0;
 
   const columns: ColumnsType<ICup> = [
@@ -96,10 +85,12 @@ const CupList = () => {
     {
       title: "RFID.",
       dataIndex: "rfid",
+      sorter: true,
     },
     {
       title: "상태",
       dataIndex: "status",
+      sorter: true,
       render: (value: CupStatus) => {
         return <span className="block">{getCupStateLabel(value)}</span>;
       },
@@ -109,6 +100,7 @@ const CupList = () => {
       dataIndex: "createdDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -123,6 +115,7 @@ const CupList = () => {
       dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -188,6 +181,10 @@ const CupList = () => {
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
+        onChange={(_pagination, _filters, sorter) => {
+          handleChangeSort(sorter);
+        }}
+        showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements || 0}
       />

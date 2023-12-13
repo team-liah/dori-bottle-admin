@@ -24,7 +24,7 @@ export interface IPostsParams {
   keyword?: string;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string | string[];
 }
 
 export interface IPostsResponse {

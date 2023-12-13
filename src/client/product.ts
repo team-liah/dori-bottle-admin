@@ -21,7 +21,7 @@ export interface IBubblesParams {
   expired?: boolean;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string | string[];
 }
 
 export interface IBubblesResponse {

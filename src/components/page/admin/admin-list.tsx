@@ -1,17 +1,18 @@
 import { AdminRole, IAdmin, deleteAdmins, getAdminRoleLabel, useAdmins } from "@/client/admin";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
+import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 const AdminList = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
 
   const { data, error, isLoading, mutate } = useAdmins({
     page: router.query.page ? Number(router.query.page) - 1 : 0,
@@ -19,41 +20,29 @@ const AdminList = () => {
     loginId: router.query.searchType === "loginId" ? String(router.query.keyword) : undefined,
     role: router.query.role && router.query.role !== "ALL" ? (router.query.role as AdminRole) : undefined,
     deleted: router.query.deleted ? (router.query.deleted === "true" ? true : false) : undefined,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     size: 5,
   });
-
-  const handleChangePage = useCallback(
-    (pageNumber: number) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: pageNumber },
-      });
-    },
-    [router]
-  );
-
-  const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  }, []);
 
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
         await deleteAdmins(ids);
         message.success("관리자가 삭제되었습니다.");
-        setSelectedRowKeys([]);
+        onSelectChange([]);
         mutate();
       } catch (error) {
         message.error("관리자 삭제에 실패했습니다.");
       }
     },
-    [mutate]
+    [mutate, onSelectChange]
   );
 
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
   const hasSelected = selectedRowKeys.length > 0;
 
   const columns: ColumnsType<IAdmin> = [
@@ -82,6 +71,7 @@ const AdminList = () => {
     {
       title: "아이디",
       dataIndex: "loginId",
+      sorter: true,
       render: (_value: string, record: IAdmin) => {
         return (
           <span>
@@ -94,6 +84,7 @@ const AdminList = () => {
     {
       title: "이름",
       dataIndex: "name",
+      sorter: true,
       render: (value: string) => {
         return <span>{value || "-"}</span>;
       },
@@ -101,6 +92,7 @@ const AdminList = () => {
     {
       title: "권한",
       dataIndex: "role",
+      sorter: true,
       render: (value: AdminRole) => {
         return <span>{getAdminRoleLabel(value) || "-"}</span>;
       },
@@ -110,6 +102,7 @@ const AdminList = () => {
       dataIndex: "createdDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -124,6 +117,7 @@ const AdminList = () => {
       dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -177,6 +171,10 @@ const AdminList = () => {
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
+        onChange={(_pagination, _filters, sorter) => {
+          handleChangeSort(sorter);
+        }}
+        showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements}
       />

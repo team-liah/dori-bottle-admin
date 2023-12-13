@@ -31,7 +31,7 @@ export interface IAdminsParams {
   deleted?: boolean;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string | string[];
 }
 
 export interface IAdminsResponse {

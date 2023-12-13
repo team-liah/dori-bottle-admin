@@ -1,57 +1,46 @@
 import { GroupType, IGroup, deleteGroups, getGroupTypeLabel, useGroups } from "@/client/group";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
+import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 const GroupList = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
 
   const { data, error, isLoading, mutate } = useGroups({
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
     type: router.query.type && router.query.type !== "ALL" ? (router.query.type as GroupType) : undefined,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     size: 5,
   });
-
-  const handleChangePage = useCallback(
-    (pageNumber: number) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: pageNumber },
-      });
-    },
-    [router]
-  );
-
-  const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  }, []);
 
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
         await deleteGroups(ids);
         message.success("기관이 삭제되었습니다.");
-        setSelectedRowKeys([]);
+        onSelectChange([]);
         mutate();
       } catch (error) {
         message.error("기관 삭제에 실패했습니다.");
       }
     },
-    [mutate]
+    [mutate, onSelectChange]
   );
 
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
   const hasSelected = selectedRowKeys.length > 0;
 
   const columns: ColumnsType<IGroup> = [
@@ -80,6 +69,7 @@ const GroupList = () => {
     {
       title: "이름",
       dataIndex: "name",
+      sorter: true,
       render: (value: string) => {
         return <span>{value || "-"}</span>;
       },
@@ -89,6 +79,7 @@ const GroupList = () => {
       dataIndex: "discountRate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: number) => {
         return <span>{`${value}%` || "-"}</span>;
       },
@@ -98,6 +89,7 @@ const GroupList = () => {
       dataIndex: "type",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: GroupType) => {
         return <span>{getGroupTypeLabel(value) || "-"}</span>;
       },
@@ -107,6 +99,7 @@ const GroupList = () => {
       dataIndex: "createdDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -121,6 +114,7 @@ const GroupList = () => {
       dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -174,6 +168,10 @@ const GroupList = () => {
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
+        onChange={(_pagination, _filters, sorter) => {
+          handleChangeSort(sorter);
+        }}
+        showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements}
       />

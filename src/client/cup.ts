@@ -23,7 +23,7 @@ export interface ICupsParams {
   status?: CupStatus;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string | string[];
 }
 
 export interface ICupsResponse {

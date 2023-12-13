@@ -1,51 +1,39 @@
 import { IPost, deletePosts, usePosts } from "@/client/post";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
+import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 const FaqList = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
 
   const { data, error, isLoading, mutate } = usePosts({
     type: "FAQ",
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     keyword: router.query.keyword as string,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     size: 5,
   });
-
-  const handleChangePage = useCallback(
-    (pageNumber: number) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: pageNumber },
-      });
-    },
-    [router]
-  );
-
-  const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  }, []);
 
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
         await deletePosts(ids);
         message.success("FAQ가 삭제되었습니다.");
-        setSelectedRowKeys([]);
+        onSelectChange([]);
         mutate();
       } catch (error) {
         message.error("FAQ 삭제에 실패했습니다.");
       }
     },
-    [mutate]
+    [mutate, onSelectChange]
   );
 
   const rowSelection = {
@@ -80,11 +68,13 @@ const FaqList = () => {
     {
       title: "제목",
       dataIndex: "title",
+      sorter: true,
     },
     {
       title: "작성자",
-      dataIndex: "author",
+      dataIndex: "author.name",
       width: 200,
+      sorter: true,
       render: (_value: unknown, record: IPost) => {
         return (
           <div className="flex flex-row items-center gap-2">
@@ -100,6 +90,7 @@ const FaqList = () => {
       dataIndex: "createdDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -114,6 +105,7 @@ const FaqList = () => {
       dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -167,6 +159,10 @@ const FaqList = () => {
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
+        onChange={(_pagination, _filters, sorter) => {
+          handleChangeSort(sorter);
+        }}
+        showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements || 0}
       />
