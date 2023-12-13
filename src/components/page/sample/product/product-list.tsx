@@ -164,7 +164,7 @@ const ProductList = () => {
         loading={isLoading}
         pagination={{
           current: Number(router.query.page || 1),
-          defaultPageSize: 5,
+          defaultPageSize: 10,
           total: data?.data.page.totalCount || 0,
           showSizeChanger: false,
           onChange: handleChangePage,

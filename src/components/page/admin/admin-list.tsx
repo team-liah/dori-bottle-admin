@@ -12,7 +12,7 @@ import React, { useCallback } from "react";
 
 const AdminList = () => {
   const router = useRouter();
-  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
+  const { selectedRowKeys, onSelectChange, handleChangeTableProps } = useTable();
 
   const { data, error, isLoading, mutate } = useAdmins({
     page: router.query.page ? Number(router.query.page) - 1 : 0,
@@ -21,7 +21,7 @@ const AdminList = () => {
     role: router.query.role && router.query.role !== "ALL" ? (router.query.role as AdminRole) : undefined,
     deleted: router.query.deleted ? (router.query.deleted === "true" ? true : false) : undefined,
     sort: router.query.sort ? String(router.query.sort) : undefined,
-    size: 5,
+    size: 10,
   });
 
   const handleDelete = useCallback(
@@ -166,14 +166,11 @@ const AdminList = () => {
         loading={isLoading}
         pagination={{
           current: Number(router.query.page || 1),
-          defaultPageSize: 5,
+          defaultPageSize: 10,
           total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
-          onChange: handleChangePage,
         }}
-        onChange={(_pagination, _filters, sorter) => {
-          handleChangeSort(sorter);
-        }}
+        onChange={handleChangeTableProps}
         showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements}
