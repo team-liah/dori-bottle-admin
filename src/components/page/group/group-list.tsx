@@ -12,14 +12,14 @@ import React, { useCallback } from "react";
 
 const GroupList = () => {
   const router = useRouter();
-  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
+  const { selectedRowKeys, onSelectChange, handleChangeTableProps } = useTable();
 
   const { data, error, isLoading, mutate } = useGroups({
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
     type: router.query.type && router.query.type !== "ALL" ? (router.query.type as GroupType) : undefined,
     sort: router.query.sort ? String(router.query.sort) : undefined,
-    size: 5,
+    size: 10,
   });
 
   const handleDelete = useCallback(
@@ -163,14 +163,11 @@ const GroupList = () => {
         loading={isLoading}
         pagination={{
           current: Number(router.query.page || 1),
-          defaultPageSize: 5,
+          defaultPageSize: 10,
           total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
-          onChange: handleChangePage,
         }}
-        onChange={(_pagination, _filters, sorter) => {
-          handleChangeSort(sorter);
-        }}
+        onChange={handleChangeTableProps}
         showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements}

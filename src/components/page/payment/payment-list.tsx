@@ -20,7 +20,7 @@ import React, { useCallback } from "react";
 
 const PaymentList = () => {
   const router = useRouter();
-  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
+  const { selectedRowKeys, onSelectChange, handleChangeTableProps } = useTable();
 
   const { data, error, isLoading, mutate } = usePayments({
     userId: router.query.userId ? (router.query.userId as string) : undefined,
@@ -192,11 +192,8 @@ const PaymentList = () => {
           defaultPageSize: 10,
           total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
-          onChange: handleChangePage,
         }}
-        onChange={(_pagination, _filters, sorter) => {
-          handleChangeSort(sorter);
-        }}
+        onChange={handleChangeTableProps}
         showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements || 0}
