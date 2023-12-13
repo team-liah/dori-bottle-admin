@@ -39,7 +39,7 @@ export interface IUsersParams {
   groupId?: React.Key;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string | string[];
 }
 
 export interface IUsersResponse {

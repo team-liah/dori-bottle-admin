@@ -1,17 +1,18 @@
 import { IMachine, MachineState, deleteMachines, getMachineStateLabel, useMachines } from "@/client/machine";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
+import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 const CollectionList = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
 
   const { data, error, isLoading, mutate } = useMachines({
     type: "COLLECTION",
@@ -19,36 +20,23 @@ const CollectionList = () => {
     no: router.query.searchType === "no" ? String(router.query.keyword) : undefined,
     name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
     addressKeyword: router.query.searchType === "address" ? String(router.query.keyword) : undefined,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     size: 5,
   });
-
-  const handleChangePage = useCallback(
-    (pageNumber: number) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: pageNumber },
-      });
-    },
-    [router]
-  );
-
-  const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  }, []);
 
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
         await deleteMachines(ids);
         message.success("반납함이 삭제되었습니다.");
-        setSelectedRowKeys([]);
+        onSelectChange([]);
         mutate();
       } catch (error) {
         message.error("반납함 삭제에 실패했습니다.");
       }
     },
-    [mutate]
+    [mutate, onSelectChange]
   );
 
   const rowSelection = {
@@ -83,14 +71,17 @@ const CollectionList = () => {
     {
       title: "No.",
       dataIndex: "no",
+      sorter: true,
     },
     {
       title: "이름",
       dataIndex: "name",
+      sorter: true,
     },
     {
       title: "상태",
       dataIndex: "state",
+      sorter: true,
       render: (value: MachineState) => {
         return <span className="block">{getMachineStateLabel(value)}</span>;
       },
@@ -98,6 +89,7 @@ const CollectionList = () => {
     {
       title: "컵 개수",
       dataIndex: "cupAmounts",
+      sorter: true,
       render: (_value: unknown, record: IMachine) => {
         const percentage = (record.cupAmounts / record.capacity) * 100;
         return (
@@ -114,6 +106,7 @@ const CollectionList = () => {
       dataIndex: "createdDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -128,6 +121,7 @@ const CollectionList = () => {
       dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -174,12 +168,16 @@ const CollectionList = () => {
         columns={columns}
         dataSource={data?.content || []}
         loading={isLoading}
+        showSorterTooltip={false}
         pagination={{
           current: Number(router.query.page || 1),
           defaultPageSize: 5,
           total: data?.pageable.totalElements || 0,
           showSizeChanger: false,
           onChange: handleChangePage,
+        }}
+        onChange={(_pagination, _filters, sorter) => {
+          handleChangeSort(sorter);
         }}
         className="mt-3"
         countLabel={data?.pageable.totalElements || 0}

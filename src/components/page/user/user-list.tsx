@@ -2,17 +2,18 @@ import { IGroup } from "@/client/group";
 import { Gender, IUser, useUsers } from "@/client/user";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
+import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
 import { Alert } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React from "react";
 
 const UserList = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
+  const { selectedRowKeys, onSelectChange, handleChangeSort, handleChangePage } = useTable();
 
   const { data, error, isLoading, mutate } = useUsers({
     active: router.query.active === "true" ? true : router.query.active === "false" ? false : undefined,
@@ -21,28 +22,16 @@ const UserList = () => {
     name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
     groupId: router.query.groupId !== "ALL" ? (router.query.groupId as React.Key) : undefined,
     phoneNumber: router.query.searchType === "phoneNumber" ? String(router.query.keyword) : undefined,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     size: 5,
   });
-
-  const handleChangePage = useCallback(
-    (pageNumber: number) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: pageNumber },
-      });
-    },
-    [router]
-  );
-
-  const onSelectChange = useCallback((newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  }, []);
 
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
   const hasSelected = selectedRowKeys.length > 0;
 
   const columns: ColumnsType<IUser> = [
@@ -63,13 +52,15 @@ const UserList = () => {
     {
       title: "이름",
       dataIndex: "name",
-      render: (value: string, record: IUser) => {
+      sorter: true,
+      render: (value: string) => {
         return <div>{`${value}` || "-"}</div>;
       },
     },
     {
       title: "전화번호",
       dataIndex: "loginId",
+      sorter: true,
       render: (_value: string) => {
         return <span>{_value || "-"}</span>;
       },
@@ -77,6 +68,7 @@ const UserList = () => {
     {
       title: "그룹",
       dataIndex: "group",
+      sorter: true,
       render: (_value: IGroup) => {
         return _value ? (
           <span className="underline" onClick={() => router.push(`/group/edit/${_value.id}`)}>
@@ -90,6 +82,7 @@ const UserList = () => {
     {
       title: "상태",
       align: "center",
+      sorter: true,
       render: (_value: IGroup, record: IUser) => {
         return <span>{!record.active ? "비활성" : record.blocked ? "BLOCKED" : "활성"}</span>;
       },
@@ -99,6 +92,7 @@ const UserList = () => {
       dataIndex: "createdDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -113,6 +107,7 @@ const UserList = () => {
       dataIndex: "lastModifiedDate",
       align: "center",
       width: 120,
+      sorter: true,
       render: (value: ISO8601DateTime) => {
         return (
           <div className="text-sm">
@@ -166,6 +161,10 @@ const UserList = () => {
           showSizeChanger: false,
           onChange: handleChangePage,
         }}
+        onChange={(_pagination, _filters, sorter) => {
+          handleChangeSort(sorter);
+        }}
+        showSorterTooltip={false}
         className="mt-3"
         countLabel={data?.pageable.totalElements}
       />

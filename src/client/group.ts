@@ -21,7 +21,7 @@ export interface IGroupsParams {
   type?: GroupType;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string | string[];
 }
 
 export interface IGroupsResponse {
