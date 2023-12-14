@@ -85,13 +85,20 @@ const mainMenuData: IMenu[] = [
     id: "cup",
     name: "컵 관리",
     icon: <CupSoda className="w-5 h-5" />,
-    permission: ["ADMIN", "MACHINE_ADMIN"],
+    permission: ["ADMIN"],
     submenu: [
       {
         id: "cupList",
         name: "컵 목록",
         link: {
           path: "/cup/cup/list",
+        },
+      },
+      {
+        id: "rentalList",
+        name: "대여 목록",
+        link: {
+          path: "/cup/rental/list",
         },
       },
     ],
