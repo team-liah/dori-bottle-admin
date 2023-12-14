@@ -1,8 +1,11 @@
+import { useCollectionMachinesInfinity, useVendingMachinesInfinity } from "@/client/machine";
 import { IRentalsParams, RENTAL_STATUSES, getRentalStateLabel } from "@/client/rental";
+import { useUsersInfinity } from "@/client/user";
 import DefaultSearchForm from "@/components/shared/form/ui/default-search-form";
 import FieldInline from "@/components/shared/form/ui/field-inline";
 import FormSearch from "@/components/shared/form/ui/form-search";
-import { Button, Form, Input, Radio, Select } from "antd";
+import SelectSearch from "@/components/shared/form/ui/select-search";
+import { Button, Divider, Form, Input, Radio, Select, Space } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { Search } from "lucide-react";
 import { useRouter } from "next/router";
@@ -64,6 +67,33 @@ const RentalSearch = () => {
             <Form.Item name="keyword" className="grow">
               <Input placeholder="키워드를 입력해주세요" />
             </Form.Item>
+          </FieldInline>
+          <FieldInline>
+            <Form.Item label="회원명" name="userId">
+              <SelectSearch
+                placeholder="회원명을 검색해주세요"
+                label={(data) => `${data.name} (${data.loginId.slice(9)})`}
+                fetcher={useUsersInfinity}
+              />
+            </Form.Item>
+          </FieldInline>
+          <FieldInline>
+            <Space split={<Divider type="vertical" />}>
+              <Form.Item label="대여 위치" name="fromMachineId">
+                <SelectSearch
+                  placeholder="자판기명을 검색해주세요"
+                  label={(data) => data.name}
+                  fetcher={useVendingMachinesInfinity}
+                />
+              </Form.Item>
+              <Form.Item label="반납 위치" name="toMachineId">
+                <SelectSearch
+                  placeholder="수거함명을 검색해주세요"
+                  label={(data) => data.name}
+                  fetcher={useCollectionMachinesInfinity}
+                />
+              </Form.Item>
+            </Space>
           </FieldInline>
         </div>
       </FormSearch>

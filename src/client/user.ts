@@ -1,5 +1,6 @@
 import qs from "qs";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 import { fetchApi } from "./base";
 import { IGroup } from "./group";
 import { IPageable } from "./pageable";
@@ -54,6 +55,10 @@ export interface IUserFormValue {
 
 export const useUsers = (params: IUsersParams = {}) => {
   return useSWR<IUsersResponse>(`/api/user?${qs.stringify(params)}`);
+};
+
+export const useUsersInfinity = (params: IUsersParams = {}) => {
+  return useSWRInfinite<IUsersResponse>((index) => `/api/user?${qs.stringify({ ...params, page: index })}`);
 };
 
 export const useUser = (id: React.Key) => {
