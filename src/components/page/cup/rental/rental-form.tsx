@@ -25,7 +25,6 @@ const RentalForm = ({ id, initialValues }: IRentalFormProps) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const onClickRentalReturn = async () => {
-    const hide = messageApi.loading("반납 처리 중입니다.", 0);
     try {
       if (!initialValues?.cup?.rfid) throw new Error("컵 ID가 없습니다.");
       if (!form.getFieldValue("toMachineNo")) throw new Error("반납함 No.가 없습니다.");
@@ -39,20 +38,17 @@ const RentalForm = ({ id, initialValues }: IRentalFormProps) => {
     } catch (e: unknown) {
       messageApi.error(await getErrorMessage(e));
     }
-    hide();
   };
 
   const onClickRentalCancel = async () => {
-    const hide = messageApi.loading("대여 취소 중입니다.", 0);
     try {
       await cancelUserRentals([id as string]);
       messageApi.success("대여가 취소되었습니다.");
+      mutate(`/api/rental/${id}`);
     } catch (e: unknown) {
       messageApi.error(await getErrorMessage(e));
     } finally {
-      mutate(`/api/rental/${id}`);
     }
-    hide();
   };
 
   const isReturned = initialValues?.toMachine !== null;
