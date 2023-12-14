@@ -132,8 +132,13 @@ const RentalList = () => {
       dataIndex: "status",
       align: "center",
       sorter: true,
-      render: (value: RentalStatus) => {
-        return <span className="block">{getRentalStateLabel(value)}</span>;
+      render: (value: RentalStatus, record: IRental) => {
+        return (
+          <div className="text-sm">
+            <span className="block">{`${record.toMachine ? "반납됨" : "미반납"}`}</span>
+            <span className="block">{`(${getRentalStateLabel(record?.status)})`}</span>
+          </div>
+        );
       },
     },
     {

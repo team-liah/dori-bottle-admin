@@ -44,7 +44,7 @@ export interface IRentalsResponse {
 }
 
 export interface IReturnRentalFormValue {
-  machineId: React.Key;
+  machineNo: React.Key;
   cupRfid: string;
 }
 
@@ -73,7 +73,7 @@ export const getRentalStateLabel = (state?: RentalStatus) => {
     case "PROCEEDING":
       return "대여 중";
     case "SUCCEEDED":
-      return "반납 완료";
+      return "정상 반납";
     case "FAILED":
       return "반납 지연";
     case "CANCELED":
