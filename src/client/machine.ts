@@ -1,5 +1,6 @@
 import qs from "qs";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 import { fetchApi } from "./base";
 import { IPageable } from "./pageable";
 
@@ -52,6 +53,18 @@ export interface IMachinesResponse {
 
 export const useMachines = (params: IMachinesParams = {}) => {
   return useSWR<IMachinesResponse>(`/api/machine?${qs.stringify(params)}`);
+};
+
+export const useVendingMachinesInfinity = (params: IMachinesParams = {}) => {
+  return useSWRInfinite<IMachinesResponse>(
+    (index) => `/api/machine?${qs.stringify({ ...params, type: "VENDING", page: index })}`
+  );
+};
+
+export const useCollectionMachinesInfinity = (params: IMachinesParams = {}) => {
+  return useSWRInfinite<IMachinesResponse>(
+    (index) => `/api/machine?${qs.stringify({ ...params, type: "COLLECTION", page: index })}`
+  );
 };
 
 export const useMachine = (id: React.Key) => {

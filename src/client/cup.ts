@@ -9,7 +9,7 @@ export const CUP_STATUSES: CupStatus[] = ["AVAILABLE", "ON_LOAN", "RETURNED", "W
 export interface ICup {
   id: React.Key;
   rfid: string;
-  status?: string;
+  status?: CupStatus;
   createdDate?: string;
   lastModifiedDate?: string;
 }
