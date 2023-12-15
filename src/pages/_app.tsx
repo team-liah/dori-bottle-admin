@@ -35,6 +35,8 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           name="viewport"
           content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <meta name="mobile-wep-app-capable" content="yes" />
+        <meta name="apple-mobile-wep-app-capable" content="yes" />
       </Head>
       <ConfigProvider
         theme={{
