@@ -43,9 +43,8 @@ export interface IInquirysResponse {
   pageable: IPageable;
 }
 
-export interface IReturnInquiryFormValue {
-  machineNo: React.Key;
-  cupRfid: string;
+export interface IAnswerInquiryFormValue {
+  answer: string;
 }
 
 export const useInquirys = (params: IInquirysParams = {}) => {
@@ -56,8 +55,8 @@ export const useInquiry = (id: React.Key) => {
   return useSWR<IInquiry>(`/api/inquiry/${id}`);
 };
 
-export const answerInquiry = (id: React.Key, answer: string) => {
-  return fetchApi.post(`/api/inquiry/${id}/succeed`, { body: JSON.stringify(answer) });
+export const answerInquiry = (id: React.Key, value: IAnswerInquiryFormValue) => {
+  return fetchApi.post(`/api/inquiry/${id}/succeed`, { body: JSON.stringify(value) });
 };
 
 export const getInquiryTypeLabel = (type?: InquiryType) => {
