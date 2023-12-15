@@ -1,6 +1,6 @@
 import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/layout/default-layout";
-import UserList from "@/components/page/user/user-list";
-import UserSearch from "@/components/page/user/user-search";
+import UserList from "@/components/page/user/user/user-list";
+import UserSearch from "@/components/page/user/user/user-search";
 
 const pageHeader: IPageHeader = {
   title: "회원 목록",

@@ -1,5 +1,11 @@
-import { IGroup } from "@/client/group";
-import { Gender, IUser, useUsers } from "@/client/user";
+import {
+  IInquiry,
+  InquiryStatus,
+  InquiryType,
+  getInquiryStatusLabel,
+  getInquiryTypeLabel,
+  useInquirys,
+} from "@/client/inquiry";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import useTable from "@/hooks/useTable";
@@ -11,19 +17,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
-const UserList = () => {
+const InquiryList = () => {
   const router = useRouter();
   const { selectedRowKeys, onSelectChange, handleChangeTableProps } = useTable();
 
-  const { data, error, isLoading, mutate } = useUsers({
-    active: router.query.active === "true" ? true : router.query.active === "false" ? false : undefined,
-    blocked: router.query.blocked === "true" ? true : router.query.blocked === "false" ? false : undefined,
-    gender: router.query.gender !== "ALL" ? (router.query.gender as Gender) : undefined,
-    name: router.query.searchType === "name" ? String(router.query.keyword) : undefined,
-    groupId: router.query.groupId !== "ALL" ? (router.query.groupId as React.Key) : undefined,
-    phoneNumber: router.query.searchType === "phoneNumber" ? String(router.query.keyword) : undefined,
-    sort: router.query.sort ? String(router.query.sort) : undefined,
+  const { data, error, isLoading, mutate } = useInquirys({
+    type: router.query.type && router.query.type !== "ALL" ? (router.query.type as InquiryType) : undefined,
+    status: router.query.status && router.query.status !== "ALL" ? (router.query.status as InquiryStatus) : undefined,
+    keyword: router.query.keyword ? String(router.query.keyword) : undefined,
+    userId: router.query.userId ? String(router.query.userId) : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
+    sort: router.query.sort ? String(router.query.sort) : undefined,
     size: 10,
   });
 
@@ -34,58 +38,62 @@ const UserList = () => {
 
   const hasSelected = selectedRowKeys.length > 0;
 
-  const columns: ColumnsType<IUser> = [
+  const columns: ColumnsType<IInquiry> = [
     {
       key: "action",
       width: 120,
       align: "center",
-      render: (_value: unknown, record: IUser) => {
+      render: (_value: unknown, record: IInquiry) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/user/edit/${record.id}`} className="px-2 py-1 text-sm btn">
-              수정
+            <Link href={`/user/inquiry/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+              상세
             </Link>
           </span>
         );
       },
     },
     {
-      title: "이름",
-      dataIndex: "name",
+      title: "문의 종류",
+      width: 120,
+      dataIndex: "type",
       sorter: true,
-      render: (value: string) => {
-        return <div>{`${value}` || "-"}</div>;
+      align: "center",
+      render: (value: InquiryType) => {
+        return <span className="block">{getInquiryTypeLabel(value)}</span>;
       },
     },
     {
-      title: "전화번호",
-      dataIndex: "loginId",
+      title: "회원명",
+      width: 200,
+      dataIndex: "user.name",
+      align: "center",
       sorter: true,
-      render: (_value: string) => {
-        return <span>{_value || "-"}</span>;
-      },
-    },
-    {
-      title: "그룹",
-      dataIndex: "group",
-      sorter: true,
-      render: (_value: IGroup) => {
-        return _value ? (
-          <span className="underline" onClick={() => router.push(`/group/edit/${_value.id}`)}>
-            {_value.name}
-          </span>
-        ) : (
-          <span>-</span>
+      render: (_value: string, record: IInquiry) => {
+        return (
+          <Link href={`/user/user/edit/${record.user.id}`} className="text-black underline">
+            {record.user.name} ({record.user.loginId.slice(9)})
+          </Link>
         );
       },
     },
     {
-      title: "상태",
-      dataIndex: "active, blocked",
+      title: "내용",
+      dataIndex: "content",
       align: "center",
       sorter: true,
-      render: (_value: IGroup, record: IUser) => {
-        return <span>{!record.active ? "비활성" : record.blocked ? "BLOCKED" : "활성"}</span>;
+      render: (value: string) => {
+        return <span className="block truncate">{value}</span>;
+      },
+    },
+    {
+      title: "상태",
+      width: 120,
+      dataIndex: "status",
+      align: "center",
+      sorter: true,
+      render: (value: InquiryStatus, record: IInquiry) => {
+        return <span className="block">{getInquiryStatusLabel(record?.status)}</span>;
       },
     },
     {
@@ -109,7 +117,7 @@ const UserList = () => {
       align: "center",
       width: 120,
       sorter: true,
-      render: (value: ISO8601DateTime) => {
+      render: (value?: ISO8601DateTime) => {
         return (
           <div className="text-sm">
             <span className="block">{dayjs(value).format("YYYY/MM/DD")}</span>
@@ -128,29 +136,13 @@ const UserList = () => {
     <>
       <DefaultTableBtn className="justify-between">
         <div>
-          {/* <Popconfirm
-            title="회원을 삭제하시겠습니까?"
-            disabled={!hasSelected}
-            onConfirm={() => handleDelete(selectedRowKeys)}
-            okText="예"
-            cancelText="아니오"
-          >
-            <Button type="default" disabled={!hasSelected}>
-              일괄 삭제
-            </Button>
-          </Popconfirm> */}
-
           <span style={{ marginLeft: 8 }}>{hasSelected ? `${selectedRowKeys.length}건 선택` : ""}</span>
         </div>
 
-        {/* <div className="flex-item-list">
-          <Button type="primary" onClick={() => router.push("/user/new")}>
-            회원 등록
-          </Button>
-        </div> */}
+        <div className="flex-item-list"></div>
       </DefaultTableBtn>
 
-      <DefaultTable<IUser>
+      <DefaultTable<IInquiry>
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data?.content || []}
@@ -164,10 +156,10 @@ const UserList = () => {
         onChange={handleChangeTableProps}
         showSorterTooltip={false}
         className="mt-3"
-        countLabel={data?.pageable.totalElements}
+        countLabel={data?.pageable.totalElements || 0}
       />
     </>
   );
 };
 
-export default React.memo(UserList);
+export default React.memo(InquiryList);

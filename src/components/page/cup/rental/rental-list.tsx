@@ -85,7 +85,7 @@ const RentalList = () => {
       sorter: true,
       render: (_value: string, record: IRental) => {
         return (
-          <Link href={`/user/edit/${record.user.id}`} className="text-black underline">
+          <Link href={`/user/user/edit/${record.user.id}`} className="text-black underline">
             {record.user.name} ({record.user.loginId.slice(9)})
           </Link>
         );
