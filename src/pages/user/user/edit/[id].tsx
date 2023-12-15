@@ -1,6 +1,6 @@
 import { useUser } from "@/client/user";
 import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/layout/default-layout";
-import UserForm from "@/components/page/user/user-form";
+import UserForm from "@/components/page/user/user/user-form";
 import { Alert, Skeleton } from "antd";
 import { useRouter } from "next/router";
 

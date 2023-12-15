@@ -90,7 +90,7 @@ const PaymentList = () => {
       sorter: true,
       render: (_value: string, record: IPayment) => {
         return (
-          <Link href={`/user/edit/${record.user.id}`} className="text-black underline">
+          <Link href={`/user/user/edit/${record.user.id}`} className="text-black underline">
             {record.user.name} ({record.user.loginId.slice(9)})
           </Link>
         );

@@ -42,7 +42,7 @@ const UserList = () => {
       render: (_value: unknown, record: IUser) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/user/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+            <Link href={`/user/user/edit/${record.id}`} className="px-2 py-1 text-sm btn">
               수정
             </Link>
           </span>
