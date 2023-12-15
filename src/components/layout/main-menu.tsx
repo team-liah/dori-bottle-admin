@@ -42,6 +42,13 @@ const mainMenuData: IMenu[] = [
           path: "/user/user/list",
         },
       },
+      {
+        id: "inquiryList",
+        name: "문의 목록",
+        link: {
+          path: "/user/inquiry/list",
+        },
+      },
     ],
   },
   {
