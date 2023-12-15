@@ -1,16 +1,16 @@
-import { useUser } from "@/client/user";
+import { useInquiry } from "@/client/inquiry";
 import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/layout/default-layout";
-import UserForm from "@/components/page/user/user-form";
+import InquiryForm from "@/components/page/user/inquiry/inquiry-form";
 import { Alert, Skeleton } from "antd";
 import { useRouter } from "next/router";
 
 const pageHeader: IPageHeader = {
-  title: "회원 수정",
+  title: "문의 상세",
 };
 
-const UserEditPage: IDefaultLayoutPage = () => {
+const InquiryEditPage: IDefaultLayoutPage = () => {
   const router = useRouter();
-  const { data, error, isLoading, isValidating } = useUser(router.query.id as string);
+  const { data, error, isLoading, isValidating } = useInquiry(router.query.id as string);
 
   if (error) {
     return <Alert message="데이터 로딩 중 오류가 발생했습니다." type="warning" className="my-5" />;
@@ -20,10 +20,10 @@ const UserEditPage: IDefaultLayoutPage = () => {
     return <Skeleton className="my-5" />;
   }
 
-  return <UserForm id={router.query.id as string} initialValues={data} />;
+  return <InquiryForm id={router.query.id as string} initialValues={data} />;
 };
 
-UserEditPage.getLayout = getDefaultLayout;
-UserEditPage.pageHeader = pageHeader;
+InquiryEditPage.getLayout = getDefaultLayout;
+InquiryEditPage.pageHeader = pageHeader;
 
-export default UserEditPage;
+export default InquiryEditPage;

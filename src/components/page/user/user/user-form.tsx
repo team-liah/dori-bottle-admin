@@ -41,7 +41,7 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
         messageApi.success("수정되었습니다");
       }
 
-      setTimeout(() => router.push("/admin/list"), 500);
+      setTimeout(() => router.push("/user/user/list"), 500);
     } catch (e: unknown) {
       messageApi.error(await getErrorMessage(e));
     } finally {
