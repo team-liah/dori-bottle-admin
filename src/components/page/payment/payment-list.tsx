@@ -11,6 +11,7 @@ import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
+import { isEmpty } from "@/utils/util";
 import { Alert, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -26,11 +27,11 @@ const PaymentList = () => {
     userId: router.query.userId ? (router.query.userId as string) : undefined,
     type: router.query.type && router.query.type !== "ALL" ? (router.query.type as PaymentType) : undefined,
     status: router.query.status && router.query.status !== "ALL" ? (router.query.status as PaymentStatus) : undefined,
-    fromApprovedDate: router.query.approvedDate
-      ? (dayjs(router.query.approvedDate[0]).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ") as string)
+    fromApprovedDate: !isEmpty(router.query.approvedDate?.[0])
+      ? (dayjs(router.query.approvedDate?.[0]).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ") as string)
       : undefined,
-    toApprovedDate: router.query.approvedDate
-      ? (dayjs(router.query.approvedDate[1]).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ") as string)
+    toApprovedDate: !isEmpty(router.query.approvedDate?.[1])
+      ? (dayjs(router.query.approvedDate?.[1]).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ") as string)
       : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     sort: router.query.sort ? String(router.query.sort) : undefined,

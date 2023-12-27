@@ -38,3 +38,10 @@ export const getMonthName = (month: number) => {
 
   return monthNames[month];
 };
+
+export const isEmpty = (value: any) => {
+  if (value === null || value === undefined || value === "") {
+    return true;
+  }
+  return false;
+};
