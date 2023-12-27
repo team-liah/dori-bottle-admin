@@ -6,8 +6,8 @@ import { IMachine } from "./machine";
 import { IPageable } from "./pageable";
 import { IUser } from "./user";
 
-export type RentalStatus = "PROCEEDING" | "SUCCEEDED" | "FAILED" | "CANCELED";
-export const RENTAL_STATUSES: RentalStatus[] = ["PROCEEDING", "SUCCEEDED", "FAILED", "CANCELED"];
+export type RentalStatus = "PROCEEDING" | "CONFIRMED" | "SUCCEEDED" | "FAILED" | "CANCELED";
+export const RENTAL_STATUSES: RentalStatus[] = ["PROCEEDING", "CONFIRMED", "SUCCEEDED", "FAILED", "CANCELED"];
 
 export interface IRental {
   id: React.Key;
@@ -71,14 +71,16 @@ export const returnUserRentals = (value: IReturnRentalFormValue) => {
 export const getRentalStateLabel = (state?: RentalStatus) => {
   switch (state) {
     case "PROCEEDING":
+      return "처리 중";
+    case "CONFIRMED":
       return "대여 중";
     case "SUCCEEDED":
-      return "정상 반납";
+      return "반납 완료";
     case "FAILED":
-      return "반납 지연";
+      return "분실";
     case "CANCELED":
       return "대여 취소";
     default:
-      return "알 수 없음";
+      return "";
   }
 };

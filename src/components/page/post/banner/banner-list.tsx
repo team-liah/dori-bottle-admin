@@ -1,38 +1,23 @@
-import {
-  IPayment,
-  PaymentStatus,
-  PaymentType,
-  cancelUserPayments,
-  getPaymentStateLabel,
-  getPaymentTypeLabel,
-  usePayments,
-} from "@/client/payment";
+import { IBanner, deleteBanners, useBanners } from "@/client/banner";
 import DefaultTable from "@/components/shared/ui/default-table";
 import DefaultTableBtn from "@/components/shared/ui/default-table-btn";
 import useTable from "@/hooks/useTable";
 import { ISO8601DateTime } from "@/types/common";
-import { isEmpty } from "@/utils/util";
-import { Alert, Popconfirm, message } from "antd";
+import { Alert, Button, Popconfirm, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 
-const PaymentList = () => {
+const BannerList = () => {
   const router = useRouter();
   const { selectedRowKeys, onSelectChange, handleChangeTableProps } = useTable();
 
-  const { data, error, isLoading, mutate } = usePayments({
-    userId: router.query.userId ? (router.query.userId as string) : undefined,
-    type: router.query.type && router.query.type !== "ALL" ? (router.query.type as PaymentType) : undefined,
-    status: router.query.status && router.query.status !== "ALL" ? (router.query.status as PaymentStatus) : undefined,
-    fromApprovedDate: !isEmpty(router.query.approvedDate?.[0])
-      ? (dayjs(router.query.approvedDate?.[0]).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ") as string)
-      : undefined,
-    toApprovedDate: !isEmpty(router.query.approvedDate?.[1])
-      ? (dayjs(router.query.approvedDate?.[1]).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ") as string)
-      : undefined,
+  const { data, error, isLoading, mutate } = useBanners({
+    title: router.query.searchType === "title" ? String(router.query.keyword) : undefined,
+    content: router.query.searchType === "content" ? String(router.query.keyword) : undefined,
+    visible: router.query.visible && router.query.visible !== "ALL" ? router.query.visible === "true" : undefined,
     page: router.query.page ? Number(router.query.page) - 1 : 0,
     sort: router.query.sort ? String(router.query.sort) : undefined,
     size: 10,
@@ -41,12 +26,12 @@ const PaymentList = () => {
   const handleDelete = useCallback(
     async (ids: React.Key[]) => {
       try {
-        await cancelUserPayments(ids as string[]);
-        message.success("결제가 취소되었습니다.");
+        await deleteBanners(ids);
+        message.success("배너가 삭제되었습니다.");
         onSelectChange([]);
         mutate();
       } catch (error) {
-        message.error("결제 취소에 실패했습니다.");
+        message.error("배너 삭제에 실패했습니다.");
       }
     },
     [mutate, onSelectChange]
@@ -56,77 +41,58 @@ const PaymentList = () => {
     selectedRowKeys,
     onChange: onSelectChange,
   };
-
   const hasSelected = selectedRowKeys.length > 0;
 
-  const columns: ColumnsType<IPayment> = [
+  const columns: ColumnsType<IBanner> = [
     {
       key: "action",
       width: 120,
       align: "center",
-      render: (_value: unknown, record: IPayment) => {
+      render: (_value: unknown, record: IBanner) => {
         return (
           <span className="flex justify-center gap-2">
-            <Link href={`/payment/edit/${record.id}`} className="px-2 py-1 text-sm btn">
-              상세
+            <Link href={`/post/banner/edit/${record.id}`} className="px-2 py-1 text-sm btn">
+              수정
             </Link>
-            {record.status === "SUCCEEDED" && (
-              <Popconfirm
-                title="결제를 취소하시겠습니까?"
-                onConfirm={() => handleDelete([record.id])}
-                okText="예"
-                cancelText="아니오"
-              >
-                <a className="px-2 py-1 text-sm btn">취소</a>
-              </Popconfirm>
-            )}
+            <Popconfirm
+              title="배너를 삭제하시겠습니까?"
+              onConfirm={() => handleDelete([record.id])}
+              okText="예"
+              cancelText="아니오"
+            >
+              <a className="px-2 py-1 text-sm btn">삭제</a>
+            </Popconfirm>
           </span>
         );
       },
     },
     {
-      title: "회원명",
-      dataIndex: "user.name",
+      title: "제목",
+      dataIndex: "title",
+      sorter: true,
+      render: (value: string) => {
+        return <span className="block truncate">{value}</span>;
+      },
+    },
+    {
+      title: "순위",
+      dataIndex: "priority",
       align: "center",
+      width: 120,
       sorter: true,
-      render: (_value: string, record: IPayment) => {
-        return (
-          <Link href={`/user/user/edit/${record.user.id}`} className="text-black underline">
-            {record.user.name} ({record.user.loginId.slice(9)})
-          </Link>
-        );
-      },
-    },
-
-    {
-      title: "가격",
-      dataIndex: "price",
-      align: "right",
-      sorter: true,
-      render: (value: number) => {
-        return <span className="block">{value.toLocaleString()}원</span>;
-      },
     },
     {
-      title: "결제종류",
-      dataIndex: "type",
+      title: "노출여부",
+      dataIndex: "visible",
       align: "center",
+      width: 120,
       sorter: true,
-      render: (value: string, record: IPayment) => {
-        return <span className="block">{getPaymentTypeLabel(record.type)}</span>;
+      render: (value: boolean) => {
+        return value ? "정상" : "숨김";
       },
     },
     {
-      title: "상태",
-      dataIndex: "status",
-      align: "center",
-      sorter: true,
-      render: (value: PaymentStatus) => {
-        return <span className="block">{getPaymentStateLabel(value)}</span>;
-      },
-    },
-    {
-      title: "결제일시",
+      title: "생성일시",
       dataIndex: "createdDate",
       align: "center",
       width: 120,
@@ -165,25 +131,29 @@ const PaymentList = () => {
     <>
       <DefaultTableBtn className="justify-between">
         <div>
-          {/* <Popconfirm
-            title={`결제를 취소하시겠습니까?\n해당 결제는 복구할 수 없습니다.`}
+          <Popconfirm
+            title="배너를 삭제하시겠습니까?"
             disabled={!hasSelected}
             onConfirm={() => handleDelete(selectedRowKeys)}
             okText="예"
             cancelText="아니오"
           >
             <Button type="default" disabled={!hasSelected}>
-              일괄 취소
+              일괄 삭제
             </Button>
-          </Popconfirm> */}
+          </Popconfirm>
 
           <span style={{ marginLeft: 8 }}>{hasSelected ? `${selectedRowKeys.length}건 선택` : ""}</span>
         </div>
 
-        <div className="flex-item-list"></div>
+        <div className="flex-item-list">
+          <Button type="primary" onClick={() => router.push("/post/banner/new")}>
+            배너 등록
+          </Button>
+        </div>
       </DefaultTableBtn>
 
-      <DefaultTable<IPayment>
+      <DefaultTable<IBanner>
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data?.content || []}
@@ -203,4 +173,4 @@ const PaymentList = () => {
   );
 };
 
-export default React.memo(PaymentList);
+export default React.memo(BannerList);
