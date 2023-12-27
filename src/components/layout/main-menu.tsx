@@ -147,6 +147,13 @@ const mainMenuData: IMenu[] = [
     permission: ["ADMIN"],
     submenu: [
       {
+        id: "bannerList",
+        name: "배너 목록",
+        link: {
+          path: "/post/banner/list",
+        },
+      },
+      {
         id: "noticeList",
         name: "공지사항 목록",
         link: {
