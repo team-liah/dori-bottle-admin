@@ -3,9 +3,10 @@ import { uploadFile } from "@/client/util";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
-import useFilePreview from "@/hooks/useFilePreview";
+import ImagePreview from "@/components/shared/form/ui/image-preview";
 import { useAuth } from "@/lib/auth/auth-provider";
 import { getErrorMessage } from "@/utils/error";
+import { getBase64 } from "@/utils/util";
 import { Button, Divider, Form, Input, InputNumber, Radio, message } from "antd";
 import { useForm, useWatch } from "antd/lib/form/Form";
 import { useRouter } from "next/router";
@@ -21,7 +22,8 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
   const router = useRouter();
   const [form] = useForm();
   const { profile, mutateProfile } = useAuth();
-  const { originFile, previewImageUrl, handleFileChange } = useFilePreview();
+  const [imageFile, setImageFile] = useState<File>();
+  const [previewImage, setPreviewImage] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -29,17 +31,16 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
     try {
       setIsLoading(true);
 
-      let imageUrl = null;
-      if (originFile) {
-        const result = await uploadFile(originFile);
-        imageUrl = result.url;
+      if (imageFile) {
+        const result = await uploadFile(imageFile);
+        formValue.imageUrl = result.url;
       }
 
       if (id) {
-        await updateBanner(id, { ...formValue, imageUrl: imageUrl ?? initialValues?.imageUrl });
+        await updateBanner(id, formValue);
         messageApi.success("수정되었습니다");
       } else {
-        await createBanner({ ...formValue, imageUrl: imageUrl ?? initialValues?.imageUrl });
+        await createBanner(formValue);
         messageApi.success("생성되었습니다");
       }
       setTimeout(() => router.push("/post/banner/list"), 500);
@@ -76,14 +77,13 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
 
           <FormGroup title="이미지*">
             <Form.Item name="image">
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  handleFileChange(file);
+              <ImagePreview
+                initialValues={initialValues?.imageUrl}
+                onChange={async (file) => {
+                  const preview = await getBase64(file);
+                  setImageFile(file);
+                  setPreviewImage(preview);
                 }}
-                placeholder="이미지를 입력하세요"
               />
             </Form.Item>
           </FormGroup>
@@ -129,7 +129,7 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
             banner={{
               title: useWatch("title", form),
               content: useWatch("content", form),
-              imageUrl: previewImageUrl ?? form.getFieldValue("imageUrl"),
+              imageUrl: previewImage ?? form.getFieldValue("imageUrl"),
               backgroundColor: useWatch("backgroundColor", form),
               visible: useWatch("visible", form),
               priority: useWatch("priority", form),

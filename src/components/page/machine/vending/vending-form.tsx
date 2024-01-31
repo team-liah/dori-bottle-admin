@@ -1,8 +1,10 @@
 import { IMachine, IMachineFormValue, createMachine, getMachineStateLabel, updateMachine } from "@/client/machine";
 import { IPostFormValue } from "@/client/post";
+import { uploadFile } from "@/client/util";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
+import ImagePreview from "@/components/shared/form/ui/image-preview";
 import useMap from "@/hooks/useMap";
 import { useAuth } from "@/lib/auth/auth-provider";
 import { getErrorMessage } from "@/utils/error";
@@ -24,11 +26,17 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
   const { profile, mutateProfile } = useAuth();
   const { initializeMap, addMachineMarker, moveMap } = useMap();
   const [isLoading, setIsLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File>();
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleFinish = async (formValue: IMachineFormValue) => {
     try {
       setIsLoading(true);
+
+      if (imageFile) {
+        const result = await uploadFile(imageFile);
+        formValue.imageUrl = result.url;
+      }
 
       if (id) {
         await updateMachine(id, {
@@ -89,11 +97,13 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
                 <Input placeholder="자판기 고유번호를 입력하세요" />
               </Form.Item>
             </FormGroup>
+            <Divider />
             <FormGroup title="이름*">
               <Form.Item name="name" rules={[{ required: true, message: "필수값입니다" }]}>
                 <Input placeholder="이름을 입력하세요" />
               </Form.Item>
             </FormGroup>
+            <Divider />
             <FormGroup title="주소*">
               <Form.Item name={["address", "zipCode"]} rules={[{ required: true, message: "필수값입니다" }]}>
                 <Input placeholder="우편번호를 입력해주세요" />
@@ -103,6 +113,12 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
               </Form.Item>
               <Form.Item name={["address", "address2"]}>
                 <Input placeholder="추가 주소를 입력해주세요" />
+              </Form.Item>
+            </FormGroup>
+            <Divider />
+            <FormGroup title="이미지">
+              <Form.Item name="imageUrl">
+                <ImagePreview initialValues={initialValues?.imageUrl} onChange={(file) => setImageFile(file)} />
               </Form.Item>
             </FormGroup>
             <Divider />
@@ -118,7 +134,7 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
               </Space>
             </FormGroup>
           </FormSection>
-          <FormSection title="위치정보" description="반납함 위치 정보를 입력해주세요">
+          <FormSection title="위치정보" description="자판기 위치 정보를 입력해주세요">
             <Space>
               <Form.Item name={["location", "latitude"]}>
                 <Input placeholder="추가 주소를 입력해주세요" />
