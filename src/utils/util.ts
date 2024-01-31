@@ -15,6 +15,14 @@ export const getTimeFormat = (second: number) => {
   return `${min}:${sec < 10 ? `0${sec}` : sec}`;
 };
 
+export const getBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+
 export const copyToClipboard = async (shareTarget: string, callback: () => void) => {
   await navigator.clipboard.writeText(shareTarget);
   callback();
