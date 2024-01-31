@@ -52,6 +52,12 @@ const ImagePreview = ({ initialValues, onChange }: IImagePreviewProps) => {
         listType="picture-card"
         maxCount={1}
         fileList={fileList}
+        // Preview를 위해 임시로 onSuccess를 사용
+        customRequest={({ onSuccess }) =>
+          setTimeout(() => {
+            onSuccess?.("ok");
+          }, 0)
+        }
         onPreview={handlePreview}
         onChange={handleChange}
       >
