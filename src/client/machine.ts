@@ -29,6 +29,7 @@ export interface IMachine {
     latitude: number;
     longitude: number;
   };
+  imageUrl?: string;
   createdDate?: string;
   lastModifiedDate?: string;
 }
