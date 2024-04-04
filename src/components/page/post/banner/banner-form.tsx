@@ -23,7 +23,9 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
   const [form] = useForm();
   const { profile, mutateProfile } = useAuth();
   const [imageFile, setImageFile] = useState<File>();
+  const [backgroundImageFile, setBackgroundImageFile] = useState<File>();
   const [previewImage, setPreviewImage] = useState<string>();
+  const [previewBackgroundImage, setPreviewBackgroundImage] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -34,6 +36,11 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
       if (imageFile) {
         const result = await uploadFile(imageFile);
         formValue.imageUrl = result.url;
+      }
+
+      if (backgroundImageFile) {
+        const result = await uploadFile(backgroundImageFile);
+        formValue.backgroundImageUrl = result.url;
       }
 
       if (id) {
@@ -75,7 +82,7 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
 
           <Divider />
 
-          <FormGroup title="이미지*">
+          <FormGroup title="이미지">
             <Form.Item name="image">
               <ImagePreview
                 initialValues={initialValues?.imageUrl}
@@ -83,6 +90,29 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
                   const preview = await getBase64(file);
                   setImageFile(file);
                   setPreviewImage(preview);
+                }}
+                onRemove={() => {
+                  setImageFile(undefined);
+                  setPreviewImage(undefined);
+                }}
+              />
+            </Form.Item>
+          </FormGroup>
+
+          <Divider />
+
+          <FormGroup title="배경화면 이미지">
+            <Form.Item name="backgroundImage">
+              <ImagePreview
+                initialValues={initialValues?.backgroundImageUrl}
+                onChange={async (file) => {
+                  const preview = await getBase64(file);
+                  setBackgroundImageFile(file);
+                  setPreviewBackgroundImage(preview);
+                }}
+                onRemove={() => {
+                  setBackgroundImageFile(undefined);
+                  setPreviewBackgroundImage(undefined);
                 }}
               />
             </Form.Item>
@@ -130,6 +160,7 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
               title: useWatch("title", form),
               content: useWatch("content", form),
               imageUrl: previewImage ?? form.getFieldValue("imageUrl"),
+              backgroundImageUrl: previewBackgroundImage ?? form.getFieldValue("backgroundImageUrl"),
               backgroundColor: useWatch("backgroundColor", form),
               visible: useWatch("visible", form),
               priority: useWatch("priority", form),

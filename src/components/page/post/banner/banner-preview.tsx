@@ -10,6 +10,10 @@ const BannerPreview = ({ banner }: IBannerPreviewProps) => {
       className="relative flex max-w-[375px] h-[150px] overflow-hidden w-full flex-row items-start justify-between whitespace-pre-wrap rounded-[25px] bg-red p-6"
       style={{
         backgroundColor: banner.backgroundColor,
+        backgroundImage: banner.backgroundImageUrl ? `url(${banner.backgroundImageUrl})` : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="flex flex-col items-start justify-between gap-2">
