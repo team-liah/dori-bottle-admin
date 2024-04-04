@@ -7,14 +7,17 @@ import { useEffect, useState } from "react";
 interface IImagePreviewProps {
   initialValues?: string;
   onChange?: (file: File) => void;
+  onRemove?: () => void;
 }
 
-const ImagePreview = ({ initialValues, onChange }: IImagePreviewProps) => {
+const ImagePreview = ({ initialValues, onChange, onRemove }: IImagePreviewProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const handleCancel = () => setPreviewOpen(false);
+  const handleCancel = () => {
+    setPreviewOpen(false);
+  };
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -30,6 +33,11 @@ const ImagePreview = ({ initialValues, onChange }: IImagePreviewProps) => {
     if (newFileList[0]?.status === "done") {
       onChange?.(newFileList[0]?.originFileObj as File);
     }
+  };
+
+  const handleRemove = () => {
+    setFileList([]);
+    onRemove?.();
   };
 
   useEffect(() => {
@@ -60,6 +68,7 @@ const ImagePreview = ({ initialValues, onChange }: IImagePreviewProps) => {
         }
         onPreview={handlePreview}
         onChange={handleChange}
+        onRemove={handleRemove}
       >
         {fileList.length > 0 ? null : (
           <button style={{ border: 0, background: "none" }} type="button">
