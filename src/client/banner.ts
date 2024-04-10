@@ -46,7 +46,7 @@ export const createBanner = (value: IBannerFormValue) => {
 };
 
 export const updateBanner = (id: React.Key, value: IBannerFormValue) => {
-  return fetchApi.put(`/api/banner/${id}`, { body: JSON.stringify(value) });
+  return fetchApi.patch(`/api/banner/${id}`, { body: JSON.stringify(value) });
 };
 
 export const deleteBanners = async (ids: React.Key[]) => {

@@ -10,7 +10,7 @@ import { getBase64 } from "@/utils/util";
 import { Button, Divider, Form, Input, InputNumber, Radio, message } from "antd";
 import { useForm, useWatch } from "antd/lib/form/Form";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BannerPreview from "./banner-preview";
 
 interface IBannerFormProps {
@@ -44,7 +44,11 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
       }
 
       if (id) {
-        await updateBanner(id, formValue);
+        await updateBanner(id, {
+          ...formValue,
+          imageUrl: previewImage ? formValue.imageUrl : "",
+          backgroundImageUrl: previewBackgroundImage ? formValue.backgroundImageUrl : "",
+        });
         messageApi.success("수정되었습니다");
       } else {
         await createBanner(formValue);
@@ -60,6 +64,11 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
       setTimeout(() => setIsLoading(false), 500);
     }
   };
+
+  useEffect(() => {
+    setPreviewImage(initialValues?.imageUrl);
+    setPreviewBackgroundImage(initialValues?.backgroundImageUrl);
+  }, [initialValues]);
 
   return (
     <>
@@ -113,6 +122,7 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
                 onRemove={() => {
                   setBackgroundImageFile(undefined);
                   setPreviewBackgroundImage(undefined);
+                  form.setFieldsValue({ backgroundImageUrl: "" });
                 }}
               />
             </Form.Item>
@@ -159,8 +169,8 @@ const BannerForm = ({ id, initialValues }: IBannerFormProps) => {
             banner={{
               title: useWatch("title", form),
               content: useWatch("content", form),
-              imageUrl: previewImage ?? form.getFieldValue("imageUrl"),
-              backgroundImageUrl: previewBackgroundImage ?? form.getFieldValue("backgroundImageUrl"),
+              imageUrl: previewImage,
+              backgroundImageUrl: previewBackgroundImage,
               backgroundColor: useWatch("backgroundColor", form),
               visible: useWatch("visible", form),
               priority: useWatch("priority", form),
