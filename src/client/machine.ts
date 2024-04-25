@@ -56,6 +56,10 @@ export const useMachines = (params: IMachinesParams = {}) => {
   return useSWR<IMachinesResponse>(`/api/machine?${qs.stringify(params)}`);
 };
 
+export const useAllMachines = () => {
+  return useSWR<IMachinesResponse>(`/api/machine?size=1000`);
+};
+
 export const useVendingMachinesInfinity = (params: IMachinesParams = {}) => {
   return useSWRInfinite<IMachinesResponse>(
     (index) => `/api/machine?${qs.stringify({ ...params, type: "VENDING", page: index })}`
