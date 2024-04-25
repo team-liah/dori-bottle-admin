@@ -12,15 +12,14 @@ import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
 import ImagePreview from "@/components/shared/form/ui/image-preview";
-import useMap from "@/hooks/useMap";
 import { useAuth } from "@/lib/auth/auth-provider";
 import { getErrorMessage } from "@/utils/error";
 import { Button, Divider, Form, Input, Select, Space, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import Script from "next/script";
 import React, { useState } from "react";
+import NaverMap from "../common/naver-map";
 
 interface IVendingFormProps {
   id?: string;
@@ -31,7 +30,6 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
   const router = useRouter();
   const [form] = useForm();
   const { profile, mutateProfile } = useAuth();
-  const { initializeMap, addMachineMarker, moveMap } = useMap();
   const [isLoading, setIsLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File>();
   const [messageApi, contextHolder] = message.useMessage();
@@ -79,23 +77,9 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
     }
   };
 
-  const onReady = () => {
-    initializeMap();
-    addMachineMarker(initialValues as IMachine, (x, y) =>
-      form.setFieldsValue({ location: { longitude: x, latitude: y } })
-    );
-    moveMap(initialValues?.location?.latitude || 37.5512698, initialValues?.location?.longitude || 126.98822);
-  };
-
   return (
     <>
       {contextHolder}
-      <Script
-        strategy="afterInteractive"
-        type="text/javascript"
-        src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NCP_CLIENT_ID}`}
-        onReady={onReady}
-      />
       <DefaultForm<IPostFormValue> form={form} initialValues={initialValues} onFinish={handleFinish}>
         <div className="flex flex-col gap-4 md:flex-row">
           <FormSection title="기본정보" description="자판기 기본 정보를 입력해주세요">
@@ -150,7 +134,10 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
                 <Input placeholder="추가 주소를 입력해주세요" />
               </Form.Item>
             </Space>
-            <div id={"map"} style={{ width: "100%", height: "400px" }} />
+            <NaverMap
+              initialValues={initialValues as IMachine}
+              onChagePosition={(x, y) => form.setFieldsValue({ location: { longitude: x, latitude: y } })}
+            />
           </FormSection>
         </div>
 
