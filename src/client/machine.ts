@@ -7,8 +7,8 @@ import { IPageable } from "./pageable";
 export type MachineType = "VENDING" | "COLLECTION" | "WASHING";
 export const MACHINE_TYPES: MachineType[] = ["VENDING", "COLLECTION", "WASHING"];
 
-export type MachineState = "NORMAL" | "MALFUNCTION";
-export const MACHINE_STATES: MachineState[] = ["NORMAL", "MALFUNCTION"];
+export type MachineState = "NORMAL" | "MALFUNCTION" | "PAUSE";
+export const MACHINE_STATES: MachineState[] = ["NORMAL", "MALFUNCTION", "PAUSE"];
 
 export interface IAddress {
   zipCode: string;
@@ -107,6 +107,8 @@ export const getMachineStateLabel = (state?: MachineState) => {
       return "✅ 정상";
     case "MALFUNCTION":
       return "⛔️ 고장";
+    case "PAUSE":
+      return "⏸ 일시정지";
     default:
       return "";
   }

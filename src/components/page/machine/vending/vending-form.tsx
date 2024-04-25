@@ -1,4 +1,11 @@
-import { IMachine, IMachineFormValue, createMachine, getMachineStateLabel, updateMachine } from "@/client/machine";
+import {
+  IMachine,
+  IMachineFormValue,
+  MACHINE_STATES,
+  createMachine,
+  getMachineStateLabel,
+  updateMachine,
+} from "@/client/machine";
 import { IPostFormValue } from "@/client/post";
 import { uploadFile } from "@/client/util";
 import DefaultForm from "@/components/shared/form/ui/default-form";
@@ -8,7 +15,7 @@ import ImagePreview from "@/components/shared/form/ui/image-preview";
 import useMap from "@/hooks/useMap";
 import { useAuth } from "@/lib/auth/auth-provider";
 import { getErrorMessage } from "@/utils/error";
-import { Button, Divider, Form, Input, Space, message } from "antd";
+import { Button, Divider, Form, Input, Select, Space, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
@@ -150,7 +157,15 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
         {!!id && (
           <FormSection title="기타 정보" description="자판기 상세 정보입니다.">
             <FormGroup title="기기 상태">
-              <Form.Item>{getMachineStateLabel(initialValues?.state)}</Form.Item>
+              <Form.Item name="state">
+                <Select style={{ width: 200 }}>
+                  {MACHINE_STATES.map((status) => (
+                    <Select.Option key={status} value={status}>
+                      {getMachineStateLabel(status)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
             </FormGroup>
             <FormGroup title="생성 날짜">
               <Form.Item>{dayjs(initialValues?.createdDate).format("YYYY/MM/DD HH:mm")}</Form.Item>
