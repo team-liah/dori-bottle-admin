@@ -12,8 +12,8 @@ const useMap = () => {
     if (mapRef.current === undefined) return;
     const marker = new window.naver.maps.Marker({
       position: new window.naver.maps.LatLng(
-        machine?.location.latitude || 37.596578,
-        machine?.location.longitude || 127.052435
+        machine?.location.latitude || 37.5512698,
+        machine?.location.longitude || 126.98822
       ),
       map: mapRef.current,
     });
@@ -27,9 +27,9 @@ const useMap = () => {
   const initializeMap = useCallback(() => {
     if (!window.naver.maps) return;
     const mapOptions = {
-      center: new window.naver.maps.LatLng(37.596578, 127.052435),
+      center: new window.naver.maps.LatLng(37.5512698, 126.98822),
       zoom: 13,
-      minZoom: 9,
+      minZoom: 7,
       scaleControl: false,
       mapDataControl: false,
       logoControlOptions: {

@@ -84,7 +84,7 @@ const VendingForm = ({ id, initialValues }: IVendingFormProps) => {
     addMachineMarker(initialValues as IMachine, (x, y) =>
       form.setFieldsValue({ location: { longitude: x, latitude: y } })
     );
-    moveMap(initialValues?.location?.latitude || 37.596578, initialValues?.location?.longitude || 127.052435);
+    moveMap(initialValues?.location?.latitude || 37.5512698, initialValues?.location?.longitude || 126.98822);
   };
 
   return (

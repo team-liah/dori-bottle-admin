@@ -10,8 +10,8 @@ const AdminNewPage: IDefaultLayoutPage = () => {
     <CollectionForm
       initialValues={{
         location: {
-          latitude: 37.596578,
-          longitude: 127.052435,
+          latitude: 37.5512698,
+          longitude: 126.98822,
         },
       }}
     />
