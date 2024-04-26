@@ -61,15 +61,19 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
       <DefaultForm<IAdminFormValue> form={form} initialValues={initialValues} onFinish={handleFinish}>
         <FormSection title="기본정보" description="관리자 기본 정보를 입력해주세요">
           <FormGroup title="관리자 권한">
-            <Form.Item name="role">
-              <Select style={{ width: 200 }}>
-                {ADMIN_ROLES.map((role) => (
-                  <Select.Option key={role} value={role}>
-                    {getAdminRoleLabel(role)}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+            {id ? (
+              <Form.Item>{getAdminRoleLabel(initialValues?.role)}</Form.Item>
+            ) : (
+              <Form.Item name="role">
+                <Select style={{ width: 200 }}>
+                  {ADMIN_ROLES.map((role) => (
+                    <Select.Option key={role} value={role}>
+                      {getAdminRoleLabel(role)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            )}
           </FormGroup>
 
           <Divider />
