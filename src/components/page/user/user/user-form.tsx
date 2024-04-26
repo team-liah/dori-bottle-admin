@@ -151,7 +151,7 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
             저장
           </Button>
         </div>
-        <FormSection title="패널티 정보" description="회원 패널티 정보를 입력해주세요">
+        <FormSection title="페널티 정보" description="회원 페널티 정보를 입력해주세요">
           <FormGroup title="블락 상태">
             <Form.Item>
               <span className="mr-1">{initialValues?.blocked ? "이용 불가" : "이용 가능"}</span>
