@@ -5,10 +5,12 @@ import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
 import { getErrorMessage } from "@/utils/error";
-import { Button, Divider, Form, Input, Popover, Select, Tag, message } from "antd";
+import { Button, Divider, Form, Input, Popconfirm, Popover, Select, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import { XCircleIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
+import { mutate } from "swr";
 import UserPenaltyDetail from "./user-penalty-detail";
 import UserPenaltyFormModal from "./user-penalty-form-modal";
 
@@ -53,24 +55,40 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
     async (penaltyIds: React.Key[]) => {
       try {
         await deleteUserPenalty(id!, penaltyIds);
+        mutate(
+          `/api/user/${id}`,
+          {
+            ...initialValues,
+            penalties: initialValues?.penalties?.filter((penalty) => !penaltyIds.includes(penalty.id)),
+          },
+          false
+        );
         messageApi.success("레드카드가 삭제되었습니다.");
       } catch (error) {
         messageApi.error("레드카드 삭제에 실패했습니다.");
       }
     },
-    [id, messageApi]
+    [id, messageApi, initialValues]
   );
 
   const handleDeleteBlock = useCallback(
     async (blockIds: React.Key[]) => {
       try {
         await deleteUserBlockCause(id!, blockIds);
+        mutate(
+          `/api/user/${id}`,
+          {
+            ...initialValues,
+            blockedCauses: initialValues?.blockedCauses?.filter((block) => !blockIds.includes(block.id)),
+          },
+          false
+        );
         messageApi.success("블락 상태가 삭제되었습니다.");
       } catch (error) {
         messageApi.error("블락 상태 삭제에 실패했습니다.");
       }
     },
-    [id, messageApi]
+    [id, messageApi, initialValues]
   );
 
   return (
@@ -133,23 +151,30 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
             저장
           </Button>
         </div>
-        <FormSection title="패널티 정보" description="회원 패널티 정보를 입력해주세요">
+        <FormSection title="페널티 정보" description="회원 페널티 정보를 입력해주세요">
           <FormGroup title="블락 상태">
             <Form.Item>
               <span className="mr-1">{initialValues?.blocked ? "이용 불가" : "이용 가능"}</span>
               <Divider type="vertical" />
-              {initialValues?.blocked &&
-                initialValues?.blockedCauses?.map((cause) => (
-                  <Tag
-                    key={cause.id}
-                    className="mx-2"
-                    color="red-inverse"
-                    closable={true}
-                    onClose={() => handleDeleteBlock([cause.id])}
-                  >
-                    {getBlockCauseTypeLabel(cause.type)}
-                  </Tag>
-                ))}
+              <div className="flex flex-wrap gap-2 py-4">
+                {initialValues?.blocked &&
+                  initialValues?.blockedCauses?.map((cause) => (
+                    <div
+                      key={cause.id}
+                      className={`w-fit flex flex-row items-center gap-1 px-2 py-1 text-xs bg-red-500 text-white rounded-md cursor-pointer`}
+                    >
+                      {getBlockCauseTypeLabel(cause.type)}
+                      <Popconfirm
+                        title="블락를 삭제하시겠습니까?"
+                        onConfirm={() => handleDeleteBlock([cause.id])}
+                        okText="삭제"
+                        cancelText="취소"
+                      >
+                        <XCircleIcon size={12} />
+                      </Popconfirm>
+                    </div>
+                  ))}
+              </div>
             </Form.Item>
           </FormGroup>
 
@@ -161,18 +186,29 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
                 레드카드 추가
               </Button>
               <Divider type="vertical" />
-              {initialValues?.penalties?.map((record) => (
-                <Popover key={record.id} placement="bottomLeft" content={<UserPenaltyDetail penalty={record} />}>
-                  <Tag
-                    className="m-2 cursor-pointer"
-                    color="error"
-                    closable={true}
-                    onClose={() => handleDeletePenalty([record.id])}
-                  >
-                    {getPenaltyTypeLabel(record.type)}
-                  </Tag>
-                </Popover>
-              ))}
+              <div className="flex flex-wrap gap-2 py-4">
+                {initialValues?.penalties?.map((record) => (
+                  <Popover key={record.id} placement="bottomLeft" content={<UserPenaltyDetail penalty={record} />}>
+                    <div
+                      className={`flex flex-row items-center gap-1 px-2 py-1 text-xs bg-red-300 rounded-md cursor-pointer  ${
+                        record.disabled && "opacity-50"
+                      }`}
+                    >
+                      {getPenaltyTypeLabel(record.type)}
+                      {!record.disabled && (
+                        <Popconfirm
+                          title="레드카드를 삭제하시겠습니까?"
+                          onConfirm={() => handleDeletePenalty([record.id])}
+                          okText="삭제"
+                          cancelText="취소"
+                        >
+                          <XCircleIcon size={12} />
+                        </Popconfirm>
+                      )}
+                    </div>
+                  </Popover>
+                ))}
+              </div>
             </Form.Item>
           </FormGroup>
         </FormSection>

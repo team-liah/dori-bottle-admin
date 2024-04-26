@@ -12,6 +12,7 @@ export interface IPenalty {
   type: PenaltyType;
   cause: string;
   createdDate?: string;
+  disabled?: boolean;
   lastModifiedDate?: string;
 }
 

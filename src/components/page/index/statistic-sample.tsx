@@ -49,7 +49,7 @@ const StatisticSample = () => {
           </div>
         </div>
         <div className="p-5 border rounded-lg ">
-          <div>패널티 결제</div>
+          <div>페널티 결제</div>
           <div className="flex items-center mt-3">
             <div className="text-2xl font-semibold grow">
               <CountUp end={data.penaltyAmount.value} separator="," />원
