@@ -1,4 +1,5 @@
 import { ADMIN_ROLES, IAdminFormValue, createAdmin, getAdminRoleLabel, updateAdmin } from "@/client/admin";
+import { GENDERS, getUserGenderLabel } from "@/client/user";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
@@ -34,11 +35,13 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
         return;
       }
 
+      const value = { ...formValue, gender: formValue.gender ?? null};
+
       if (id) {
-        await updateAdmin(id, formValue);
+        await updateAdmin(id, value);
         messageApi.success("수정되었습니다");
       } else {
-        await createAdmin(formValue);
+        await createAdmin(value);
         messageApi.success("생성되었습니다");
       }
       setTimeout(() => router.push("/admin/list"), 500);
@@ -58,15 +61,19 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
       <DefaultForm<IAdminFormValue> form={form} initialValues={initialValues} onFinish={handleFinish}>
         <FormSection title="기본정보" description="관리자 기본 정보를 입력해주세요">
           <FormGroup title="관리자 권한">
-            <Form.Item name="role">
-              <Select style={{ width: 200 }}>
-                {ADMIN_ROLES.map((role) => (
-                  <Select.Option key={role} value={role}>
-                    {getAdminRoleLabel(role)}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+            {id ? (
+              <Form.Item>{getAdminRoleLabel(initialValues?.role)}</Form.Item>
+            ) : (
+              <Form.Item name="role">
+                <Select style={{ width: 200 }}>
+                  {ADMIN_ROLES.map((role) => (
+                    <Select.Option key={role} value={role}>
+                      {getAdminRoleLabel(role)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            )}
           </FormGroup>
 
           <Divider />
@@ -108,6 +115,20 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
           </FormGroup>
         </FormSection>
         <FormSection title="추가정보" description="관리자 추가 정보를 입력해주세요">
+          <FormGroup title="성별">
+            <Form.Item name="gender" initialValue={initialValues?.gender ?? ""}>
+              <Select>
+                {GENDERS.map((gender) => (
+                  <Select.Option value={gender} key={gender}>
+                    {getUserGenderLabel(gender)}
+                  </Select.Option>
+                ))}
+                <Select.Option value={""} key={"null"}>
+                  알수없음
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </FormGroup>
           <FormGroup title="이메일">
             <Form.Item
               name="email"

@@ -2,6 +2,7 @@ import qs from "qs";
 import useSWR from "swr";
 import { fetchApi } from "./base";
 import { IPageable } from "./pageable";
+import { Gender } from "./user";
 
 export type AdminRole = "ADMIN" | "MACHINE_ADMIN" | "INSTITUTION";
 export const ADMIN_ROLES: AdminRole[] = ["ADMIN", "MACHINE_ADMIN", "INSTITUTION"];
@@ -16,6 +17,7 @@ export interface IAdmin {
   description?: string;
   role: AdminRole;
   deleted: boolean;
+  gender?: Gender | null;
   createdDate?: string;
   lastModifiedDate?: string;
 }

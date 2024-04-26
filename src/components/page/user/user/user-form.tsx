@@ -117,6 +117,12 @@ const UserForm = ({ id, initialValues }: IUserFormProps) => {
 
           <Divider />
 
+          <FormGroup title="성별">
+            <Form.Item>{initialValues?.gender ? getUserGenderLabel(initialValues.gender) : "-"}</Form.Item>
+          </FormGroup>
+
+          <Divider />
+
           <FormGroup title="활성 여부">
             <Form.Item>{initialValues?.active ? "활성" : "비활성"}</Form.Item>
           </FormGroup>
