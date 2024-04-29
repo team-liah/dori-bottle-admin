@@ -13,3 +13,7 @@
 .ant-input-affix-wrapper.ant-input-affix-wrapper-lg svg {
   @apply w-5 h-5;
 }
+
+.ant-picker-calendar-date-content {
+  height: 120px !important;
+}

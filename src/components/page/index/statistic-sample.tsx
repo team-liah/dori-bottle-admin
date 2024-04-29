@@ -1,5 +1,6 @@
-import { useStatistic } from "@/client/statistic";
+import { usePaymentMonthStatistic, useRentalMonthStatistic } from "@/client/statistic";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useRouter } from "next/router";
 import React from "react";
 import CountUp from "react-countup";
 
@@ -22,39 +23,53 @@ const renderChangeRate = (value: number) => {
 };
 
 const StatisticSample = () => {
-  const data = useStatistic();
+  const router = useRouter();
+  const currentYear = Number(router.query.year as string) || new Date().getFullYear();
+  const currentMonth = Number(router.query.month as string) || new Date().getMonth() + 1;
+  const mode = (router.query.mode as "month" | "year") || "month";
 
-  if (!data) return <></>;
+  const paymentData = usePaymentMonthStatistic({
+    year: currentYear,
+    month: mode === "month" ? currentMonth : undefined,
+    mode,
+  });
+  const rentalData = useRentalMonthStatistic({
+    year: currentYear,
+    month: mode === "month" ? currentMonth : undefined,
+    mode,
+  });
+
+  if (!paymentData || !rentalData) return <></>;
   return (
     <>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <div className="p-5 border rounded-lg ">
-          <div>총 매출</div>
+          <div>{mode === "month" ? `${currentMonth}월` : `${currentYear}년`} 총 매출</div>
           <div className="mt-3">
             <div className="flex items-center mt-3">
               <div className="text-2xl font-semibold grow">
-                <CountUp end={data.totalAmount.value} separator="," />명
+                <CountUp end={paymentData.totalAmount.value} separator="," />원
               </div>
-              <div>{renderChangeRate(data.totalAmount.rate)}</div>
+              <div>{renderChangeRate(paymentData.totalAmount.rate)}</div>
             </div>
           </div>
         </div>
         <div className="p-5 border rounded-lg ">
-          <div>버블 충전</div>
+          <div>사용 버블 개수</div>
           <div className="flex items-center mt-3">
             <div className="text-2xl font-semibold grow">
-              <CountUp end={data.savePointAmount.value} separator="," />건
+              <CountUp end={rentalData.totalPointAmount.value} separator="," />개
             </div>
-            <div>{renderChangeRate(data.savePointAmount.rate)}</div>
+            <div>{renderChangeRate(rentalData.totalPointAmount.rate)}</div>
           </div>
         </div>
         <div className="p-5 border rounded-lg ">
           <div>페널티 결제</div>
           <div className="flex items-center mt-3">
             <div className="text-2xl font-semibold grow">
-              <CountUp end={data.penaltyAmount.value} separator="," />원
+              <CountUp end={paymentData.penaltyAmount.value} separator="," />원
             </div>
-            <div>{renderChangeRate(data.penaltyAmount.rate)}</div>
+            <div>{renderChangeRate(paymentData.penaltyAmount.rate)}</div>
           </div>
         </div>
       </div>

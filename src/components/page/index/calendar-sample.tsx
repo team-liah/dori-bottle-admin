@@ -1,65 +1,45 @@
-import { usePaymentStatitics } from "@/client/statistic";
-import { Badge, BadgeProps, Calendar, CalendarProps, Divider } from "antd";
+import { usePaymentStatitics, useRentalStatitics } from "@/client/statistic";
+import { Calendar, CalendarProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React from "react";
+import CalendarDateCell from "./calendar-date-cell";
+import CalendarMonthCell from "./calendar-month-cell";
+import CustomBadge from "./custom-badge";
 
 const CalendarSample = () => {
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [month, setMonth] = useState<number | undefined>(new Date().getMonth());
-  const { data: statistics } = usePaymentStatitics({ year, month });
+  const router = useRouter();
+  const year = Number(router.query.year as string) || new Date().getFullYear();
+  const month = Number(router.query.month as string) || new Date().getMonth() + 1;
+  const mode = (router.query.mode as "month" | "year") || "month";
+
+  const { data: paymentStatistics } = usePaymentStatitics({ year, month: mode === "month" ? month : undefined });
+  const { data: rentalStatistics } = useRentalStatitics({ year, month: mode === "month" ? month : undefined });
 
   const onChangePanel = (date: Dayjs, mode: "month" | "year") => {
-    setYear(date.year());
-    setMonth(mode === "month" ? date.month() : undefined);
+    router.push({
+      query: {
+        year: date.year(),
+        month: date.month() + 1,
+        mode: mode,
+      },
+    });
   };
 
   const monthCellRender = (value: Dayjs) => {
-    const data = statistics?.find((item) => dayjs(item.date).isSame(value, "month"));
-    if (!data || data.totalAmount === 0) return null;
-    return (
-      <div className="flex flex-col text-[10px]">
-        <div className="text-[14px] font-bold">{`₩ ${data?.totalAmount.toLocaleString() || 0}`}</div>
-        <Divider
-          style={{
-            margin: "4px 0",
-          }}
-        />
-        <CustomBadge status="success" text={data?.savePointAmount.toLocaleString() || "0"} />
-        <CustomBadge status="warning" text={data?.lostCupAmount.toLocaleString() || "0"} />
-        <CustomBadge
-          status="error"
-          text={
-            statistics
-              ?.find((item) => dayjs(item.date).isSame(value, "month"))
-              ?.unblockAccountAmount.toLocaleString() || "0"
-          }
-        />
-      </div>
-    );
+    const paymentData = paymentStatistics?.find((item) => dayjs(item.date).isSame(value, "month"));
+    const rentalData = rentalStatistics?.find((item) => dayjs(item.date).isSame(value, "month"));
+    return <CalendarMonthCell paymentData={paymentData} rentalData={rentalData} />;
   };
 
   const dateCellRender = (value: Dayjs) => {
-    return (
-      <ul className="events">
-        {statistics?.map((item) => {
-          if (dayjs(item.date).isSame(value, "day") && item.totalAmount > 0) {
-            return (
-              <div key={`${item.date}`} className="flex flex-col text-[10px]">
-                <div className="text-[14px] font-bold">{`₩ ${item.totalAmount.toLocaleString()}`}</div>
-                <Divider
-                  style={{
-                    margin: "4px 0",
-                  }}
-                />
-                <CustomBadge status="success" text={item.savePointAmount.toLocaleString()} />
-                <CustomBadge status="warning" text={item.lostCupAmount.toLocaleString()} />
-                <CustomBadge status="error" text={item.unblockAccountAmount.toLocaleString()} />
-              </div>
-            );
-          }
-        })}
-      </ul>
+    const paymentData = paymentStatistics?.find(
+      (item) => dayjs(item.date).isSame(value, "day") && item.totalAmount > 0
     );
+    const rentalData = rentalStatistics?.find((item) => dayjs(item.date).isSame(value, "day"));
+    if (!paymentData && !rentalData) return null;
+
+    return <CalendarDateCell paymentData={paymentData} rentalData={rentalData} />;
   };
 
   const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
@@ -68,20 +48,18 @@ const CalendarSample = () => {
     return info.originNode;
   };
 
-  return <Calendar cellRender={cellRender} onPanelChange={onChangePanel} />;
+  return (
+    <>
+      <div className="flex flex-col text-[12px] gap-1 ml-auto bg-slate-100 w-fit p-4 rounded-md">
+        <CustomBadge status="success" text="버블 결제 금액" />
+        <CustomBadge status="warning" text="연체 결제 금액" />
+        <CustomBadge status="error" text="패널티 결제 금액" />
+        <CustomBadge status="default" text="사용 버블 개수" />
+        <CustomBadge status="processing" text="대여 건수" />
+      </div>
+      <Calendar cellRender={cellRender} onPanelChange={onChangePanel} mode={mode}/>;
+    </>
+  );
 };
 
 export default React.memo(CalendarSample);
-
-const CustomBadge = ({ status, text }: { status?: BadgeProps["status"]; text: string }) => {
-  return (
-    <Badge
-      style={{
-        lineHeight: "14px",
-        fontSize: "11px",
-      }}
-      status={status}
-      text={<span className="text-[11px]">{text}</span>}
-    />
-  );
-};
