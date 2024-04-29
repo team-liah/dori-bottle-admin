@@ -35,7 +35,7 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
         return;
       }
 
-      const value = { ...formValue, gender: formValue.gender ?? null};
+      const value = { ...formValue, gender: formValue.gender };
 
       if (id) {
         await updateAdmin(id, value);
@@ -116,14 +116,14 @@ const AdminForm = ({ id, initialValues }: IAdminFormProps) => {
         </FormSection>
         <FormSection title="추가정보" description="관리자 추가 정보를 입력해주세요">
           <FormGroup title="성별">
-            <Form.Item name="gender" initialValue={initialValues?.gender ?? ""}>
+            <Form.Item name="gender">
               <Select>
                 {GENDERS.map((gender) => (
                   <Select.Option value={gender} key={gender}>
                     {getUserGenderLabel(gender)}
                   </Select.Option>
                 ))}
-                <Select.Option value={""} key={"null"}>
+                <Select.Option value={null} key={"null"}>
                   알수없음
                 </Select.Option>
               </Select>
