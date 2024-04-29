@@ -30,6 +30,7 @@ export const copyToClipboard = async (shareTarget: string, callback: () => void)
 
 export const getMonthName = (month: number) => {
   const monthNames = [
+    "",
     "JANUARY",
     "FEBRUARY",
     "MARCH",
