@@ -7,7 +7,7 @@ import DefaultText from "@/components/shared/form/ui/default-text";
 import FormGroup from "@/components/shared/form/ui/form-group";
 import FormSection from "@/components/shared/form/ui/form-section";
 import { getErrorMessage } from "@/utils/error";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Image, Input, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import dayjs from "dayjs";
 import Link from "next/link";
@@ -68,6 +68,13 @@ const InquiryForm = ({ id, initialValues }: IInquiryFormProps) => {
             <Form.Item name="content">
               <DefaultText />
             </Form.Item>
+            {initialValues?.imageUrls && initialValues?.imageUrls.length > 0 && (
+              <Form.Item>
+                <div className="flex flex-row gap-4">
+                  {initialValues?.imageUrls?.map((image) => <Image key={image} alt="" src={image} />)}
+                </div>
+              </Form.Item>
+            )}
           </FormGroup>
           <FormGroup title="답변">
             <Form.Item name="answer">
@@ -151,7 +158,7 @@ const InquiryForm = ({ id, initialValues }: IInquiryFormProps) => {
             </FormGroup>
           </FormSection>
         )}
-  
+
         {payment && (
           <FormSection title="결제 정보" description="결제 정보입니다.">
             <FormGroup title="결제 번호">
