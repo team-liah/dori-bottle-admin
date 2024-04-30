@@ -10,6 +10,9 @@ export const INQUIRY_TYPES: InquiryType[] = ["REFUND", "ETC"];
 export type InquiryStatus = "PROCEEDING" | "SUCCEEDED";
 export const INQUIRY_STATUSES: InquiryStatus[] = ["PROCEEDING", "SUCCEEDED"];
 
+export type InquiryTargetType = "RENTAL" | "PAYMENT";
+export const INQUIRY_TARGET_TYPES: InquiryTargetType[] = ["RENTAL", "PAYMENT"];
+
 export interface IBankAccount {
   bank: string;
   accountNumber: string;
@@ -20,8 +23,13 @@ export interface IInquiry {
   id: React.Key;
   user: IUser;
   type: InquiryType;
-  bankAccount: IBankAccount;
+  bankAccount?: IBankAccount;
   content: string;
+  target?: {
+    id: React.Key;
+    classType: InquiryTargetType;
+  };
+  imageUrls: string[];
   answer: string;
   status: InquiryStatus;
   createdDate: string;

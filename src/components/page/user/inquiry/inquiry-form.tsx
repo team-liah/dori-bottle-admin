@@ -1,5 +1,7 @@
 import { IInquiry, answerInquiry, getInquiryStatusLabel, getInquiryTypeLabel } from "@/client/inquiry";
+import { getPaymentStateLabel, getPaymentTypeLabel, usePayment } from "@/client/payment";
 import { IPostFormValue } from "@/client/post";
+import { useRental } from "@/client/rental";
 import DefaultForm from "@/components/shared/form/ui/default-form";
 import DefaultText from "@/components/shared/form/ui/default-text";
 import FormGroup from "@/components/shared/form/ui/form-group";
@@ -8,6 +10,7 @@ import { getErrorMessage } from "@/utils/error";
 import { Button, Form, Input, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -21,6 +24,13 @@ const InquiryForm = ({ id, initialValues }: IInquiryFormProps) => {
   const [form] = useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { data: rental } = useRental(
+    initialValues?.target?.classType === "RENTAL" ? initialValues?.target?.id : undefined
+  );
+  const { data: payment } = usePayment(
+    initialValues?.target?.classType === "PAYMENT" ? initialValues?.target?.id : undefined
+  );
 
   const handleFinish = async (formValue: IInquiry) => {
     try {
@@ -76,6 +86,108 @@ const InquiryForm = ({ id, initialValues }: IInquiryFormProps) => {
           </FormGroup>
         </FormSection>
 
+        {initialValues?.bankAccount && (
+          <FormSection title="환불 정보" description="환불 요청한 계좌 정보입니다.">
+            <FormGroup title="예금주">
+              <Form.Item name={["bankAccount", "accountHolder"]}>
+                <DefaultText />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="은행">
+              <Form.Item name={["bankAccount", "bank"]}>
+                <DefaultText />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="계좌번호">
+              <Form.Item name={["bankAccount", "accountNumber"]}>
+                <DefaultText />
+              </Form.Item>
+            </FormGroup>
+          </FormSection>
+        )}
+
+        {rental && (
+          <FormSection title="대여 정보" description="대여 정보입니다.">
+            <FormGroup title="대여 번호">
+              <Form.Item>
+                <DefaultText
+                  value={
+                    <Link href={`/cup/rental/edit/${rental.id}`} className="text-black underline">
+                      {rental.no}
+                    </Link>
+                  }
+                />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="대여 기기">
+              <Form.Item>
+                <DefaultText value={rental.fromMachine?.name || "-"} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="반납 기기">
+              <Form.Item>
+                <DefaultText value={rental.toMachine?.name || "-"} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="대여 컵">
+              <Form.Item>
+                <DefaultText value={rental.cup?.rfid || "-"} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="대여 비용">
+              <Form.Item>
+                <DefaultText value={rental.cost} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="대여 상태">
+              <Form.Item>
+                <DefaultText value={rental.status} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="대여 생성 일시">
+              <Form.Item>
+                <DefaultText value={dayjs(rental.createdDate).format("YYYY/MM/DD HH:mm")} />
+              </Form.Item>
+            </FormGroup>
+          </FormSection>
+        )}
+  
+        {payment && (
+          <FormSection title="결제 정보" description="결제 정보입니다.">
+            <FormGroup title="결제 번호">
+              <Form.Item>
+                <DefaultText
+                  value={
+                    <Link href={`/payment/edit/${payment.id}`} className="text-black underline">
+                      {payment.id}
+                    </Link>
+                  }
+                />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="결제 금액">
+              <Form.Item>
+                <DefaultText value={`${payment.price.toLocaleString()}원`} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="결제 종류">
+              <Form.Item>
+                <DefaultText value={getPaymentTypeLabel(payment.type)} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="결제 상태">
+              <Form.Item>
+                <DefaultText value={getPaymentStateLabel(payment.status)} />
+              </Form.Item>
+            </FormGroup>
+            <FormGroup title="결제 생성 일시">
+              <Form.Item>
+                <DefaultText value={dayjs(payment.createdDate).format("YYYY/MM/DD HH:mm")} />
+              </Form.Item>
+            </FormGroup>
+          </FormSection>
+        )}
+
         <FormSection title="유저 정보" description="문의 유저 정보입니다.">
           <FormGroup title="유저 ID">
             <Form.Item name={["user", "id"]}>
@@ -90,6 +202,12 @@ const InquiryForm = ({ id, initialValues }: IInquiryFormProps) => {
           <FormGroup title="전화번호">
             <Form.Item name={["user", "loginId"]}>
               <DefaultText />
+            </Form.Item>
+          </FormGroup>
+
+          <FormGroup title="생성 일시">
+            <Form.Item>
+              <DefaultText value={dayjs(initialValues?.createdDate).format("YYYY/MM/DD HH:mm")} />
             </Form.Item>
           </FormGroup>
         </FormSection>

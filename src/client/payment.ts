@@ -131,8 +131,8 @@ export const usePayments = (params: IPaymentsParams = {}) => {
   return useSWR<IPaymentsResponse>(`/api/payment?${qs.stringify(params)}`);
 };
 
-export const usePayment = (id: React.Key) => {
-  return useSWR<IPayment>(`/api/payment/${id}`);
+export const usePayment = (id?: React.Key) => {
+  return useSWR<IPayment>(id ? `/api/payment/${id}` : null);
 };
 
 export const cancelUserPayments = async (ids: React.Key[]) => {

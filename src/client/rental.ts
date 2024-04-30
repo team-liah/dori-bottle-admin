@@ -52,8 +52,8 @@ export const useRentals = (params: IRentalsParams = {}) => {
   return useSWR<IRentalsResponse>(`/api/rental?${qs.stringify(params)}`);
 };
 
-export const useRental = (id: React.Key) => {
-  return useSWR<IRental>(`/api/rental/${id}`);
+export const useRental = (id?: React.Key) => {
+  return useSWR<IRental>(id ? `/api/rental/${id}` : null);
 };
 
 export const cancelUserRentals = async (ids: React.Key[]) => {
