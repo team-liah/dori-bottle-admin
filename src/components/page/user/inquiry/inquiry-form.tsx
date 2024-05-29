@@ -71,7 +71,9 @@ const InquiryForm = ({ id, initialValues }: IInquiryFormProps) => {
             {initialValues?.imageUrls && initialValues?.imageUrls.length > 0 && (
               <Form.Item>
                 <div className="flex flex-row gap-4">
-                  {initialValues?.imageUrls?.map((image) => <Image key={image} alt="" src={image} />)}
+                  {initialValues?.imageUrls?.map((image) => (
+                    <Image key={image} alt="" src={image} width={"100px"} height={"100px"} />
+                  ))}
                 </div>
               </Form.Item>
             )}
