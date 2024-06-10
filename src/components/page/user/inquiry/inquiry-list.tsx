@@ -70,10 +70,12 @@ const InquiryList = () => {
       align: "center",
       sorter: true,
       render: (_value: string, record: IInquiry) => {
-        return (
+        return record.user ? (
           <Link href={`/user/user/edit/${record.user.id}`} className="text-black underline">
             {record.user.name} ({record.user.loginId.slice(9)})
           </Link>
+        ) : (
+          <span className="block">비회원</span>
         );
       },
     },

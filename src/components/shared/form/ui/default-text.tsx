@@ -22,6 +22,7 @@ const DefaultText = ({ value }: { value?: any }) => {
         borderRadius: 6,
         transition: "all 0.2s",
         borderColor: "transparent",
+        whiteSpace: "pre-line",
       }}
     >
       {value}

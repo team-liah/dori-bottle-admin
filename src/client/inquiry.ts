@@ -4,8 +4,8 @@ import { fetchApi } from "./base";
 import { IPageable } from "./pageable";
 import { IUser } from "./user";
 
-export type InquiryType = "REFUND" | "ETC";
-export const INQUIRY_TYPES: InquiryType[] = ["REFUND", "ETC"];
+export type InquiryType = "REFUND" | "SALES" | "ETC";
+export const INQUIRY_TYPES: InquiryType[] = ["REFUND", "SALES", "ETC"];
 
 export type InquiryStatus = "PROCEEDING" | "SUCCEEDED";
 export const INQUIRY_STATUSES: InquiryStatus[] = ["PROCEEDING", "SUCCEEDED"];
@@ -71,6 +71,8 @@ export const getInquiryTypeLabel = (type?: InquiryType) => {
   switch (type) {
     case "REFUND":
       return "환불";
+    case "SALES":
+      return "도입 문의";
     case "ETC":
       return "기타";
     default:
